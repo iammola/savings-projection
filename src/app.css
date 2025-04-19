@@ -30,7 +30,7 @@
   --foreground: oklch(0.985 0.002 247.839);
   --card: oklch(0.21 0.034 264.665);
   --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(00.13 0.028 261.692);
+  --popover: oklch(0.21 0.034 264.665);
   --popover-foreground: oklch(0.985 0.002 247.839);
   --primary: oklch(0.928 0.006 264.531);
   --primary-foreground: oklch(0.21 0.034 264.665);
@@ -69,18 +69,21 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
-  --rounded-xl: calc(var(--radius) + 4px);
   --rounded-lg: var(--radius);
   --rounded-md: calc(var(--radius) - 2px);
   --rounded-sm: calc(var(--radius) - 4px);
 }
 
+@utility container {
+  padding-inline: 2rem;
+  margin-inline: auto;
+}
+
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border font-serif;
   }
-
   body {
-    @apply bg-background font-sans text-foreground antialiased;
+    @apply bg-background text-foreground;
   }
 }
