@@ -127,6 +127,7 @@
         },
       },
     ]}
+    defaults={{ font: { family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' } }}
     class="p-2"
   />
 </main>
