@@ -26,7 +26,7 @@
   const data = $derived(calculateAccountGrowth(initialBalance, monthlyContribution, totalMonths));
 
   function calculateAccountGrowth(initialBalance: number, monthlyContribution: number, totalMonths: number) {
-    const FALLBACK = { interestEarned: 0, invested: initialBalance, balance: initialBalance };
+    const FALLBACK = { label: "", interestEarned: 0, invested: initialBalance, balance: initialBalance };
 
     return Array.from({ length: totalMonths }).reduce<Array<typeof FALLBACK>>((acc, _, monthIndex) => {
       const previous = acc[monthIndex - 1] ?? FALLBACK;
@@ -45,7 +45,12 @@
 
       return [
         ...acc,
-        { invested: nextInvested, interestEarned: nextInterestEarned, balance: nextInterestEarned + nextInvested },
+        {
+          label: `Month ${monthIndex + 1}`,
+          invested: nextInvested,
+          interestEarned: nextInterestEarned,
+          balance: nextInterestEarned + nextInvested,
+        },
       ];
     }, []);
   }
@@ -71,22 +76,10 @@
   <Chart
     type="line"
     data={{
-      labels: data.map((_, i) => `Month ${i + 1}`),
+      labels: data.map((d) => d.label),
       datasets: [
-        {
-          label: "Balance",
-          data: data.map((d) => d.balance),
-          normalized: true,
-          pointRadius: 1,
-          pointBackgroundColor: "black",
-        },
-        {
-          label: "Total Invested",
-          data: data.map((d) => d.invested),
-          normalized: true,
-          pointRadius: 1,
-          pointBackgroundColor: "black",
-        },
+        { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 1 },
+        { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 1 },
       ],
     }}
     options={{
