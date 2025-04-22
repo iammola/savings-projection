@@ -1,9 +1,15 @@
 <script lang="ts">
   import { Tooltip } from "chart.js";
+  import { easingEffects } from "chart.js/helpers";
 
   import Chart from "$lib/components/Chart.svelte";
   import { Input } from "$lib/components/shadcn/input";
   import { Label } from "$lib/components/shadcn/label";
+
+  const totalAnimationDuration = 2e3;
+  const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
+    (easingEffects.easeInOutSine("index" in ctx ? ctx.index : ctx.dataIndex / data.length) * totalAnimationDuration) /
+    data.length;
 
   const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
 
@@ -74,19 +80,41 @@
       </div>
     </section>
   </aside>
-  <main class="flex flex-col items-center justify-center-safe gap-4 p-4 *:min-h-0">
+  <main class="flex flex-col items-center justify-center-safe gap-4 p-2 *:min-h-0">
     <p></p>
     <Chart
       type="line"
       data={{
         labels: data.map((d) => d.label),
         datasets: [
-          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 1 },
-          { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 1 },
+          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0 },
+          { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 0 },
         ],
       }}
       options={{
-        animation: false,
+        animations: {
+          x: {
+            from: NaN,
+            easing: "linear",
+            duration: animationDuration,
+            delay(ctx) {
+              if (ctx.type !== "data" || ctx.mode !== "default") return 0;
+
+              const totalDelay = ctx.dataIndex * 20;
+              return totalDelay > totalAnimationDuration ? totalAnimationDuration : totalDelay;
+            },
+          },
+          y: {
+            easing: "linear",
+            duration: animationDuration,
+            from: (ctx) => {
+              const dataIndex = "index" in ctx ? (ctx.index as number) : ctx.dataIndex;
+              return dataIndex < 1 ?
+                  ctx.chart.scales.y.getPixelForValue(100)
+                : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[dataIndex - 1].getProps(["y"], true).y;
+            },
+          },
+        },
         scales: {
           y: { ticks: { callback: (tickValue) => currencyFormatter.format(+tickValue) } },
         },
