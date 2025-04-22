@@ -103,7 +103,37 @@
         },
       },
     }}
-    plugins={[Tooltip]}
+    plugins={[
+      Tooltip,
+      {
+        id: "hoverLines",
+        beforeTooltipDraw(chart, args) {
+          const { caretX: x, caretY: y } = args.tooltip;
+
+          const ctx = chart.ctx;
+          ctx.save();
+
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "red";
+
+          ctx.beginPath();
+          ctx.setLineDash([5, 7]);
+          ctx.moveTo(chart.chartArea.left, y);
+          ctx.lineTo(x, y);
+          ctx.lineTo(x, chart.chartArea.top);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.setLineDash([]);
+          ctx.moveTo(x, chart.chartArea.bottom);
+          ctx.lineTo(x, y);
+          ctx.lineTo(chart.chartArea.right, y);
+          ctx.stroke();
+          //
+          ctx.restore();
+        },
+      },
+    ]}
     class="p-2"
   />
 </main>
