@@ -8,7 +8,7 @@
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
-    (easingEffects.easeInOutSine("index" in ctx ? ctx.index : ctx.dataIndex / data.length) * totalAnimationDuration) /
+    (easingEffects.easeInOutSine(("index" in ctx ? ctx.index : ctx.dataIndex) / data.length) * totalAnimationDuration) /
     data.length;
 
   const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
