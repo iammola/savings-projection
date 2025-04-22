@@ -56,78 +56,82 @@
   }
 </script>
 
-<main class="flex h-screen w-screen flex-col items-center justify-center-safe gap-4 p-4 *:min-h-0">
-  <h1>Money!</h1>
-  <p></p>
-  <section class="flex shrink-0 gap-5">
-    <div>
-      <Label>Initial Balance ({initialBalance})</Label>
-      <Input type="range" bind:value={initialBalance} min={0} max={10e5} step={100} />
-    </div>
-    <div>
-      <Label>Monthly Contribution ({monthlyContribution})</Label>
-      <Input type="range" bind:value={monthlyContribution} min={0} max={2e3} step={10} />
-    </div>
-    <div>
-      <Label>Total Months ({totalMonths})</Label>
-      <Input type="range" bind:value={totalMonths} min={0} max={12 * 9} step={1} />
-    </div>
-  </section>
-  <Chart
-    type="line"
-    data={{
-      labels: data.map((d) => d.label),
-      datasets: [
-        { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 1 },
-        { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 1 },
-      ],
-    }}
-    options={{
-      animation: false,
-      scales: {
-        y: { ticks: { callback: (tickValue) => currencyFormatter.format(+tickValue) } },
-      },
-      interaction: { intersect: false, mode: "index" },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            footer: ([a]) => `Interest Earned: ${currencyFormatter.format(data[a.dataIndex].interestEarned)}`,
+<div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] divide-x divide-dashed *:min-h-0">
+  <aside class="flex flex-col gap-2 divide-y p-4">
+    <h1>Money!</h1>
+    <section class="space-y-5">
+      <div>
+        <Label>Initial Balance ({initialBalance})</Label>
+        <Input type="range" bind:value={initialBalance} min={0} max={10e5} step={100} />
+      </div>
+      <div>
+        <Label>Monthly Contribution ({monthlyContribution})</Label>
+        <Input type="range" bind:value={monthlyContribution} min={0} max={2e3} step={10} />
+      </div>
+      <div>
+        <Label>Total Months ({totalMonths})</Label>
+        <Input type="range" bind:value={totalMonths} min={2} max={12 * 25} step={1} />
+      </div>
+    </section>
+  </aside>
+  <main class="flex flex-col items-center justify-center-safe gap-4 p-4 *:min-h-0">
+    <p></p>
+    <Chart
+      type="line"
+      data={{
+        labels: data.map((d) => d.label),
+        datasets: [
+          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 1 },
+          { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 1 },
+        ],
+      }}
+      options={{
+        animation: false,
+        scales: {
+          y: { ticks: { callback: (tickValue) => currencyFormatter.format(+tickValue) } },
+        },
+        interaction: { intersect: false, mode: "index" },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              footer: ([a]) => `Interest Earned: ${currencyFormatter.format(data[a.dataIndex].interestEarned)}`,
+            },
           },
         },
-      },
-    }}
-    plugins={[
-      Tooltip,
-      {
-        id: "hoverLines",
-        beforeTooltipDraw(chart, args) {
-          const { caretX: x, caretY: y } = args.tooltip;
+      }}
+      plugins={[
+        Tooltip,
+        {
+          id: "hoverLines",
+          beforeTooltipDraw(chart, args) {
+            const { caretX: x, caretY: y } = args.tooltip;
 
-          const ctx = chart.ctx;
-          ctx.save();
+            const ctx = chart.ctx;
+            ctx.save();
 
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = "red";
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "red";
 
-          ctx.beginPath();
-          ctx.setLineDash([5, 7]);
-          ctx.moveTo(chart.chartArea.left, y);
-          ctx.lineTo(x, y);
-          ctx.lineTo(x, chart.chartArea.top);
-          ctx.stroke();
+            ctx.beginPath();
+            ctx.setLineDash([5, 7]);
+            ctx.moveTo(chart.chartArea.left, y);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x, chart.chartArea.top);
+            ctx.stroke();
 
-          ctx.beginPath();
-          ctx.setLineDash([]);
-          ctx.moveTo(x, chart.chartArea.bottom);
-          ctx.lineTo(x, y);
-          ctx.lineTo(chart.chartArea.right, y);
-          ctx.stroke();
-          //
-          ctx.restore();
+            ctx.beginPath();
+            ctx.setLineDash([]);
+            ctx.moveTo(x, chart.chartArea.bottom);
+            ctx.lineTo(x, y);
+            ctx.lineTo(chart.chartArea.right, y);
+            ctx.stroke();
+            //
+            ctx.restore();
+          },
         },
-      },
-    ]}
-    defaults={{ font: { family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' } }}
-    class="p-2"
-  />
-</main>
+      ]}
+      defaults={{ font: { family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' } }}
+      class="p-2"
+    />
+  </main>
+</div>
