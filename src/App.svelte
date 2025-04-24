@@ -3,15 +3,19 @@
   import { easingEffects } from "chart.js/helpers";
 
   import Chart from "$lib/components/Chart.svelte";
-  import { Input } from "$lib/components/shadcn/input";
   import { Label } from "$lib/components/shadcn/label";
+  import NumberInput from "$lib/components/NumberInput.svelte";
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
     (easingEffects.easeInOutSine(("index" in ctx ? ctx.index : ctx.dataIndex) / data.length) * totalAnimationDuration) /
     data.length;
 
-  const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
+  const currencyFormatter = new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "CAD",
+    trailingZeroDisplay: "stripIfInteger",
+  });
 
   let initialBalance = $state(2500);
   let monthlyContribution = $state(300);
@@ -67,16 +71,16 @@
     <h1>Money!</h1>
     <section class="space-y-5">
       <div>
-        <Label>Initial Balance ({initialBalance})</Label>
-        <Input type="range" bind:value={initialBalance} min={0} max={10e5} step={100} />
+        <Label>Initial Balance</Label>
+        <NumberInput type="currency" bind:value={initialBalance} />
       </div>
       <div>
-        <Label>Monthly Contribution ({monthlyContribution})</Label>
-        <Input type="range" bind:value={monthlyContribution} min={0} max={2e3} step={10} />
+        <Label>Monthly Contribution</Label>
+        <NumberInput type="currency" bind:value={monthlyContribution} min={0} />
       </div>
       <div>
-        <Label>Total Months ({totalMonths})</Label>
-        <Input type="range" bind:value={totalMonths} min={2} max={12 * 25} step={1} />
+        <Label>Total Months</Label>
+        <NumberInput bind:value={totalMonths} min={2} />
       </div>
     </section>
   </aside>
@@ -92,6 +96,7 @@
         ],
       }}
       options={{
+        maintainAspectRatio: false,
         animations: {
           x: {
             from: NaN,
@@ -117,9 +122,11 @@
         },
         scales: {
           y: { ticks: { callback: (tickValue) => currencyFormatter.format(+tickValue) } },
+          x: { grid: { display: false } },
         },
         interaction: { intersect: false, mode: "index" },
         plugins: {
+          legend: { display: false },
           tooltip: {
             callbacks: {
               footer: ([a]) => `Interest Earned: ${currencyFormatter.format(data[a.dataIndex].interestEarned)}`,
@@ -138,22 +145,21 @@
             ctx.save();
 
             ctx.lineWidth = 2;
-            ctx.strokeStyle = "red";
+            ctx.strokeStyle = "rgba(54, 162, 235, 1)";
+            ctx.setLineDash([5, 7]);
 
             ctx.beginPath();
-            ctx.setLineDash([5, 7]);
             ctx.moveTo(chart.chartArea.left, y);
             ctx.lineTo(x, y);
             ctx.lineTo(x, chart.chartArea.top);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.setLineDash([]);
             ctx.moveTo(x, chart.chartArea.bottom);
             ctx.lineTo(x, y);
             ctx.lineTo(chart.chartArea.right, y);
             ctx.stroke();
-            //
+
             ctx.restore();
           },
         },
