@@ -139,28 +139,20 @@
         {
           id: "hoverLines",
           beforeTooltipDraw(chart, args) {
-            const { caretX: x, caretY: y } = args.tooltip;
+            args.tooltip.dataPoints.forEach(({ dataset, element }, index) => {
+              chart.ctx.save();
 
-            const ctx = chart.ctx;
-            ctx.save();
+              chart.ctx.lineWidth = 2;
+              chart.ctx.setLineDash([5, 7]);
+              chart.ctx.strokeStyle = typeof dataset.borderColor === "string" ? dataset.borderColor : "#000";
 
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "rgba(54, 162, 235, 1)";
-            ctx.setLineDash([5, 7]);
+              chart.ctx.beginPath();
+              chart.ctx.moveTo(chart.chartArea.left, element.y);
+              chart.ctx.lineTo(chart.chartArea.right, element.y);
+              chart.ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(chart.chartArea.left, y);
-            ctx.lineTo(x, y);
-            ctx.lineTo(x, chart.chartArea.top);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(x, chart.chartArea.bottom);
-            ctx.lineTo(x, y);
-            ctx.lineTo(chart.chartArea.right, y);
-            ctx.stroke();
-
-            ctx.restore();
+              chart.ctx.restore();
+            });
           },
         },
       ]}
