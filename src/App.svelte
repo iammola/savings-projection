@@ -5,6 +5,7 @@
   import Chart from "$lib/components/Chart.svelte";
   import { Label } from "$lib/components/shadcn/label";
   import NumberInput from "$lib/components/NumberInput.svelte";
+  import NumberTiers from "$lib/components/NumberTiers.svelte";
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
@@ -20,18 +21,22 @@
   let initialBalance = $state(2500);
   let monthlyContribution = $state(300);
   let totalMonths = $state(12 /* 1 Year */);
-
-  const bonusInterest = [
-    { minMonth: 0, maxMonth: 2, rate: 5 }, // Between the first 3 months, give an additional 5% interest
-    { minContribution: 200, rate: 0.25 }, // Give an additional 0.25% interest if the closing balance is 200 more than the previous month
-  ];
-  const interestTiers = [
+  let interestTiers = $state([
     { min: 0, rate: 0.25 },
     { min: 10e3, rate: 0.3 },
     { min: 25e3, rate: 0.55 },
     { min: 10e4, rate: 0.8 },
     { min: 5e5, rate: 1 },
+  ]);
+
+  const bonusInterest = [
+    { minMonth: 0, maxMonth: 2, rate: 5 }, // Between the first 3 months, give an additional 5% interest
+    { minContribution: 200, rate: 0.25 }, // Give an additional 0.25% interest if the closing balance is 200 more than the previous month
   ];
+
+  $effect(() => {
+    $inspect(interestTiers).with(console.log);
+  });
 
   const data = $derived(calculateAccountGrowth(initialBalance, monthlyContribution, totalMonths));
 
@@ -67,9 +72,9 @@
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] divide-x divide-dashed *:min-h-0">
-  <aside class="flex flex-col gap-2 divide-y p-4">
+  <aside class="flex flex-col gap-2 divide-y py-4 *:px-4">
     <h1>Money!</h1>
-    <section class="space-y-5">
+    <section class="space-y-5 overflow-y-auto">
       <div>
         <Label>Initial Balance</Label>
         <NumberInput type="currency" bind:value={initialBalance} />
@@ -82,18 +87,19 @@
         <Label>Total Months</Label>
         <NumberInput bind:value={totalMonths} min={2} />
       </div>
+      <div>
+        <Label>Interest Tiers</Label>
+        <NumberTiers bind:value={interestTiers} />
+      </div>
     </section>
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 p-2 *:min-h-0">
-    <p></p>
+    <p>Description/Summary of Growth here</p>
     <Chart
       type="line"
       data={{
         labels: data.map((d) => d.label),
-        datasets: [
-          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0 },
-          { label: "Total Invested", data: data.map((d) => d.invested), normalized: true, pointRadius: 0 },
-        ],
+        datasets: [{ label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0 }],
       }}
       options={{
         maintainAspectRatio: false,

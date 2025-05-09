@@ -1,12 +1,8 @@
 <script lang="ts">
   import { Input } from "$lib/components/shadcn/input";
-  import type { ComponentProps } from "svelte";
-  import type { Action } from "svelte/action";
-
-  const formatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
 
   interface Props {
-    type?: "currency" | "number";
+    type?: "currency" | "percent" | "number";
     value?: number;
     min?: number;
     max?: number;
@@ -18,11 +14,23 @@
 
   let inputEl = $state<HTMLInputElement | null>(null);
 
+  const formatter = $derived(
+    new Intl.NumberFormat(
+      undefined,
+      type === "percent" ? { style: "percent", minimumFractionDigits: 2 }
+      : type === "currency" ? { style: "currency", currency: "CAD" }
+      : {},
+    ),
+  );
+
   const formatted = $derived.by(() => {
     if (value == null) return "";
-    if (isEditing || type !== "currency") return value.toFixed(2);
 
-    return formatter.format(value ?? 0);
+    if (isEditing || type === "number") return value.toFixed(2);
+
+    if (type === "currency") return formatter.format(value);
+
+    if (type === "percent") return formatter.format(value / 100);
   });
 
   function finishEditing() {
