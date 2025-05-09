@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { CircleAlertIcon } from "@lucide/svelte";
+  import { CircleAlertIcon, PlusIcon, XIcon } from "@lucide/svelte";
 
+  import { Button } from "$lib/components/shadcn/button";
   import * as Tooltip from "$lib/components/shadcn/tooltip";
+
   import NumberInput from "$lib/components/NumberInput.svelte";
 
   let { value = $bindable() }: Props = $props();
@@ -16,17 +18,34 @@
     if (invalidTierIndex < 0) value = $state.snapshot(storedTiers);
   });
 
+  function addTier(index = storedTiers.length) {
+    index = Math.min(Math.max(0, index), storedTiers.length);
+
+    const nextMin = index === storedTiers.length ? 0 : storedTiers[index].min;
+    const prevMin = index === 0 ? 0 : storedTiers[index - 1].min;
+
+    const min = prevMin + Math.abs(nextMin - prevMin) / 2;
+
+    storedTiers.splice(index, 0, { min, rate: 0 });
+  }
+
+  function deleteTier(index: number) {
+    if (storedTiers.length < 2) return;
+    storedTiers.splice(index, 1);
+  }
+
   interface Props {
     value: Array<{ min: number; rate: number }>;
   }
 </script>
 
 <Tooltip.Provider>
-  <div class="grid grid-cols-[max-content_minmax(0,1fr)_max-content] gap-3">
+  <div class="grid grid-cols-[max-content_minmax(0,1fr)_repeat(2,max-content)] gap-2">
     <div class="col-span-full grid grid-cols-subgrid items-center">
       <div></div>
       <div class="text-sm">Balance</div>
       <div class="text-sm">Interest</div>
+      <div></div>
     </div>
     {#each storedTiers as tier, tierIndex (tierIndex)}
       <div class="col-span-full grid grid-cols-subgrid items-center">
@@ -48,7 +67,20 @@
         <div class="w-28">
           <NumberInput type="percent" bind:value={tier.rate} min={0} max={1} />
         </div>
+        <div>
+          <button
+            type="button"
+            disabled={storedTiers.length < 2}
+            class="grid aspect-square size-7 place-items-center rounded-full [--destructive-foreground:oklch(0.985_0_0)] hover:bg-destructive/20 [&_svg]:size-4"
+            onclick={() => deleteTier(tierIndex)}
+          >
+            <XIcon />
+          </button>
+        </div>
       </div>
     {/each}
   </div>
+  <Button variant="outline" size="sm" class="mt-2" onclick={() => addTier()}>
+    <PlusIcon /> Add Tier
+  </Button>
 </Tooltip.Provider>
