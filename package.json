@@ -10,11 +10,13 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
+    "@internationalized/date": "^3.8.1",
+    "@lucide/svelte": "^0.482.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/vite": "^4.1.4",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.14.1",
-    "bits-ui": "^1.4.7",
+    "bits-ui": "^2.2.0",
     "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
@@ -29,7 +31,6 @@
     "vite": "^6.3.3"
   },
   "dependencies": {
-    "@lucide/svelte": "^0.509.0",
     "chart.js": "^4.4.9",
     "clsx": "^2.1.1"
   }

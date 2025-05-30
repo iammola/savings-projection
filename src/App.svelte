@@ -5,7 +5,8 @@
   import Chart from "$lib/components/Chart.svelte";
   import { Label } from "$lib/components/shadcn/label";
   import NumberInput from "$lib/components/NumberInput.svelte";
-  import NumberTiers from "$lib/components/NumberTiers.svelte";
+  import InterestBalanceTiers from "$lib/components/InterestBalanceTiers.svelte";
+    import BonusInterest from "$lib/components/BonusInterest/BonusInterest.svelte";
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
@@ -89,7 +90,11 @@
       </div>
       <div>
         <Label>Interest Tiers</Label>
-        <NumberTiers bind:value={interestTiers} />
+        <InterestBalanceTiers bind:value={interestTiers} />
+      </div>
+      <div>
+        <Label>Bonus Interest Tiers</Label>
+        <BonusInterest />
       </div>
     </section>
   </aside>
