@@ -105,7 +105,7 @@
       </div>
     </section>
   </aside>
-  <main class="flex flex-col items-center justify-center-safe gap-4 p-2 *:min-h-0">
+  <main class="flex flex-col items-center justify-center-safe gap-4 p-8 *:min-h-0">
     <p>Description/Summary of Growth here</p>
     <Chart
       type="line"
@@ -174,8 +174,13 @@
           },
         },
       ]}
-      defaults={{ font: { family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' } }}
-      class="p-2"
+      defaults={{
+        font: {
+          family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
+          size: 14,
+          lineHeight: 1.25 / 0.875,
+        },
+      }}
     />
   </main>
 </div>

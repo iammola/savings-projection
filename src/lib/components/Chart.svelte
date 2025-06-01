@@ -1,6 +1,8 @@
 <script lang="ts" generics="Type extends ChartType">
   import { Chart } from "chart.js/auto";
 
+  import { cn } from "$lib/utils";
+
   import type { HTMLCanvasAttributes } from "svelte/elements";
   import type { ChartData, ChartOptions, ChartType, Defaults, Plugin } from "chart.js";
 
@@ -33,6 +35,8 @@
   }
 
   $effect(() => {
+    // For some reason https://stackoverflow.com/a/74362058
+    Chart.defaults.devicePixelRatio = 4
     if (defaults != null) deepMerge(Chart.defaults, defaults);
 
     chart = new Chart(canvasElem, { type, data, options, plugins });
@@ -47,4 +51,4 @@
   });
 </script>
 
-<canvas bind:this={canvasElem} {...rest}></canvas>
+<canvas bind:this={canvasElem} {...rest} class={cn(rest.class, "[box-sizing:initial]!")}></canvas>
