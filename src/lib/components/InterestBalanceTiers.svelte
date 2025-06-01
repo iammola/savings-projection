@@ -1,8 +1,9 @@
 <script lang="ts">
   import { CircleAlertIcon, PlusIcon, XIcon } from "@lucide/svelte";
 
-  import { Button } from "$lib/components/shadcn/button";
   import * as Tooltip from "$lib/components/shadcn/tooltip";
+  import * as Popover from "$lib/components/shadcn/popover";
+  import { Button, buttonVariants } from "$lib/components/shadcn/button";
 
   import NumberInput from "$lib/components/NumberInput.svelte";
 
@@ -68,14 +69,24 @@
           <NumberInput type="percent" bind:value={tier.rate} min={0} max={1} />
         </div>
         <div>
-          <button
-            type="button"
-            disabled={storedTiers.length < 2}
-            class="grid aspect-square size-7 place-items-center rounded-full [--destructive-foreground:oklch(0.985_0_0)] hover:bg-destructive/20 [&_svg]:size-4"
-            onclick={() => deleteTier(tierIndex)}
-          >
-            <XIcon />
-          </button>
+          <Popover.Root>
+            <Popover.Trigger
+              class={buttonVariants({
+                variant: "ghost",
+                size: "icon",
+                class: "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+              })}
+            >
+              <XIcon />
+            </Popover.Trigger>
+            <Popover.Content class="space-y-2">
+              <p class="text-sm">Are you sure you want to delete this tier?</p>
+              <div class="flex items-center justify-end gap-2">
+                <Popover.Close class={buttonVariants({ size: "sm" })}>Cancel</Popover.Close>
+                <Button variant="ghost" size="sm" onclick={() => deleteTier(tierIndex)}>Yes, Delete.</Button>
+              </div>
+            </Popover.Content>
+          </Popover.Root>
         </div>
       </div>
     {/each}
