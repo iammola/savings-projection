@@ -1,8 +1,12 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
+
   import { Input } from "$lib/components/shadcn/input";
 
   interface Props {
     type?: "currency" | "percent" | "number";
+    id?: string;
+    class?: string;
     value?: number;
     min?: number;
     max?: number;
@@ -71,8 +75,13 @@
     tabindex="0"
     onclick={startEditing}
     onkeydown={startEditing}
-    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden md:text-sm"
+    class={cn(
+      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden md:text-sm",
+      rest.class,
+    )}
   >
-    {formatted}
+    <span class="block w-full overflow-clip">
+      {formatted}
+    </span>
   </div>
 {/if}

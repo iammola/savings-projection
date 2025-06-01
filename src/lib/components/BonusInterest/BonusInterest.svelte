@@ -1,55 +1,88 @@
 <script lang="ts">
-  import { PlusIcon, XIcon } from "@lucide/svelte";
-  import { Button, buttonVariants } from "$lib/components/shadcn/button";
+  import { Settings2Icon } from "@lucide/svelte";
+
+  import { Input } from "$lib/components/shadcn/input";
+  import { FormLabel } from "$lib/components/shadcn/label";
   import * as Select from "$lib/components/shadcn/select";
   import * as Popover from "$lib/components/shadcn/popover";
+  import { Separator } from "$lib/components/shadcn/separator";
+  import { Button, buttonVariants } from "$lib/components/shadcn/button";
 
-  const { value = $bindable() }: Props = $props();
+  import type { BONUS_INTEREST_TYPE } from "./types";
+  import NumberInput from "../NumberInput.svelte";
 
-  const BONUS_INTEREST_TYPES = [
-    { value: "MIN_CONTRIBUTION" as const, label: "Minimum Contribution" },
-    { value: "IN_ACCOUNT_AGE" as const, label: "Account Age (Months)" },
-  ];
+  const { isAdding = false, value = $bindable(), onDelete }: Props = $props();
 
-  const selectedLabel = $derived(value.map((item) => BONUS_INTEREST_TYPES.find((type) => type.value === item)?.label));
+  const BONUS_INTEREST_TYPES: Record<BONUS_INTEREST_TYPE["type"], string> = {
+    MIN_CONTRIBUTION: "Minimum Contribution",
+    IN_ACCOUNT_AGE: "Account Age (Months)",
+  };
 
-  function addInterestItem() {
-    value.push("");
-  }
+  const displayLabel = $derived(value.type === "" ? undefined : BONUS_INTEREST_TYPES[value.type]);
 
-  function deleteInterestItem(index: number) {
-    value.splice(index, 1);
-  }
-
-  interface Props {
-    value: string[];
-  }
+  type Props =
+    | { value: { type: "" }; isAdding: true; onDelete?: never }
+    | { value: BONUS_INTEREST_TYPE; isAdding?: false; onDelete: () => void };
 </script>
 
-{#each value as item, idx (item)}
-  <div class="flex items-center justify-start gap-2">
-    <Select.Root open type="single" bind:value={value[idx]}>
-      <Select.Trigger class="grow">{selectedLabel[idx] ?? "Select an option"}</Select.Trigger>
-      <Select.Content>
-        {#each BONUS_INTEREST_TYPES as { value, label } (value)}
-          <Select.Item {value}>{label}</Select.Item>
-        {/each}
-      </Select.Content>
-    </Select.Root>
+<div class="flex items-center justify-start gap-2">
+  <Select.Root type="single" bind:value={value.type}>
+    <Select.Trigger class="grow">{displayLabel ?? "Select an option"}</Select.Trigger>
+    <Select.Content>
+      {#each Object.entries(BONUS_INTEREST_TYPES) as [value, label] (value)}
+        <Select.Item {value}>{label}</Select.Item>
+      {/each}
+    </Select.Content>
+  </Select.Root>
+  {#if value.type !== ""}
     <Popover.Root>
-      <Popover.Trigger class={buttonVariants({ variant: "ghost", size: "icon" })}>
-        <XIcon />
+      <Popover.Trigger
+        class={buttonVariants({
+          variant: "ghost",
+          size: "icon",
+          class: "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+        })}
+      >
+        <Settings2Icon />
       </Popover.Trigger>
-      <Popover.Content class="space-y-2">
-        <p class="text-sm">Are you sure you want to delete this interest entry?</p>
-        <div class="flex items-center justify-end gap-2">
-          <Popover.Close class={buttonVariants({ size: "sm" })}>Cancel</Popover.Close>
-          <Button variant="ghost" size="sm" onclick={() => deleteInterestItem(idx)}>Yes, Delete.</Button>
+      <Popover.Content class="w-sm space-y-4">
+        <h4 class="leading-none font-medium underline underline-offset-2">Options</h4>
+        <div class="grid grid-cols-[max-content_minmax(0,1fr)_max-content] gap-2">
+          {#if value.type === "IN_ACCOUNT_AGE"}
+            <div class="col-span-full grid grid-cols-subgrid items-center">
+              <FormLabel for="min">Age <span class="text-xs text-muted-foreground">(min)</span></FormLabel>
+              <Input id="min" class="h-8" type="number" max={value.data.maxMonth} bind:value={value.data.minMonth} />
+              <span class="text-xs text-muted-foreground">months</span>
+            </div>
+            <div class="col-span-full grid grid-cols-subgrid items-center">
+              <FormLabel for="max">Age <span class="text-xs text-muted-foreground">(max)</span></FormLabel>
+              <Input id="max" class="h-8" type="number" max={value.data.minMonth} bind:value={value.data.maxMonth} />
+              <span class="text-xs text-muted-foreground">months</span>
+            </div>
+          {:else if value.type === "MIN_CONTRIBUTION"}
+            <div class="col-span-full grid grid-cols-subgrid items-center">
+              <FormLabel for="amount">Min Amount</FormLabel>
+              <NumberInput id="amount" type="currency" bind:value={value.data.amount} class="col-start-2 -col-end-1" />
+            </div>
+          {/if}
+          <Separator class="col-span-full my-1.5" />
+          <div class="col-span-full grid grid-cols-subgrid items-center">
+            <FormLabel for="interest">Interest</FormLabel>
+            <NumberInput
+              id="interest"
+              type="percent"
+              min={0}
+              max={1}
+              bind:value={value.rate}
+              class="col-start-2 -col-end-1"
+            />
+          </div>
+        </div>
+        <Separator />
+        <div class="flex items-center justify-end">
+          <Button variant="ghost" size="sm" onclick={onDelete}>Delete</Button>
         </div>
       </Popover.Content>
     </Popover.Root>
-  </div>
-{/each}
-<Button variant="outline" size="sm" class="mt-2" onclick={addInterestItem} disabled={value.includes("")}>
-  <PlusIcon /> Add Tier
-</Button>
+  {/if}
+</div>

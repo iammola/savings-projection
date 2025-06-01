@@ -3,10 +3,13 @@
   import { easingEffects } from "chart.js/helpers";
 
   import Chart from "$lib/components/Chart.svelte";
-  import { Label } from "$lib/components/shadcn/label";
+  import { FormLabel } from "$lib/components/shadcn/label";
+  import { Separator } from "$lib/components/shadcn/separator";
   import NumberInput from "$lib/components/NumberInput.svelte";
   import InterestBalanceTiers from "$lib/components/InterestBalanceTiers.svelte";
-    import BonusInterest from "$lib/components/BonusInterest/BonusInterest.svelte";
+  import BonusInterestConditions from "$lib/components/BonusInterest/BonusInterestConditions.svelte";
+
+  import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusInterest/types";
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
@@ -30,14 +33,10 @@
     { min: 5e5, rate: 1 },
   ]);
 
-  const bonusInterest = [
-    { minMonth: 0, maxMonth: 2, rate: 5 }, // Between the first 3 months, give an additional 5% interest
-    { minContribution: 200, rate: 0.25 }, // Give an additional 0.25% interest if the closing balance is 200 more than the previous month
-  ];
-
-  $effect(() => {
-    $inspect(interestTiers).with(console.log);
-  });
+  let bonusInterest = $state<BONUS_INTEREST_TYPE[]>([
+    { type: "IN_ACCOUNT_AGE", rate: 5, data: { minMonth: 0, maxMonth: 2 } }, // Between the first 3 months, give an additional 5% interest
+    { type: "MIN_CONTRIBUTION", rate: 0.25, data: { amount: 200 } }, // Give an additional 0.25% interest if the closing balance is 200 more than the previous month
+  ]);
 
   const data = $derived(calculateAccountGrowth(initialBalance, monthlyContribution, totalMonths));
 
@@ -49,9 +48,16 @@
       const interestRate = [
         interestTiers.findLast((tier) => tier.min < previous.balance)?.rate ?? 0,
         ...bonusInterest.flatMap((i) => {
-          if (i.minContribution != null && monthlyContribution < i.minContribution) return [];
-          if (i.minMonth != null && monthIndex < i.minMonth) return [];
-          if (i.maxMonth != null && monthIndex > i.maxMonth) return [];
+          switch (i.type) {
+            case "IN_ACCOUNT_AGE":
+              if (i.data.minMonth != null && monthIndex < i.data.minMonth) return [];
+              if (i.data.maxMonth != null && monthIndex > i.data.maxMonth) return [];
+              break;
+            case "MIN_CONTRIBUTION":
+              if (monthlyContribution < i.data.amount) return [];
+              break;
+          }
+
           return i.rate;
         }),
       ].reduce((acc, cur) => acc + cur / (12 * 100), 0);
@@ -73,28 +79,29 @@
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] divide-x divide-dashed *:min-h-0">
-  <aside class="flex flex-col gap-2 divide-y py-4 *:px-4">
+  <aside class="flex flex-col gap-2 py-4 *:px-4">
     <h1>Money!</h1>
+    <Separator />
     <section class="space-y-5 overflow-y-auto">
       <div>
-        <Label>Initial Balance</Label>
+        <FormLabel>Initial Balance</FormLabel>
         <NumberInput type="currency" bind:value={initialBalance} />
       </div>
       <div>
-        <Label>Monthly Contribution</Label>
+        <FormLabel>Monthly Contribution</FormLabel>
         <NumberInput type="currency" bind:value={monthlyContribution} min={0} />
       </div>
       <div>
-        <Label>Total Months</Label>
+        <FormLabel>Total Months</FormLabel>
         <NumberInput bind:value={totalMonths} min={2} />
       </div>
       <div>
-        <Label>Interest Tiers</Label>
+        <FormLabel>Interest Tiers</FormLabel>
         <InterestBalanceTiers bind:value={interestTiers} />
       </div>
       <div>
-        <Label>Bonus Interest Tiers</Label>
-        <BonusInterest />
+        <FormLabel>Bonus Interest Tiers</FormLabel>
+        <BonusInterestConditions bind:value={bonusInterest} />
       </div>
     </section>
   </aside>
