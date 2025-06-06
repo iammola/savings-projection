@@ -39,6 +39,7 @@
   ]);
 
   const data = $derived(calculateAccountGrowth(initialBalance, monthlyContribution, totalMonths));
+  const finalMonth = $derived(data.at(-1));
 
   function calculateAccountGrowth(initialBalance: number, monthlyContribution: number, totalMonths: number) {
     const FALLBACK = { label: "", interestEarned: 0, invested: initialBalance, balance: initialBalance };
@@ -78,35 +79,34 @@
   }
 </script>
 
-<div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] divide-x divide-dashed *:min-h-0">
-  <aside class="flex flex-col gap-2 py-4 *:px-4">
-    <h1>Money!</h1>
-    <Separator />
-    <section class="space-y-5 overflow-y-auto">
-      <div>
-        <FormLabel>Initial Balance</FormLabel>
-        <NumberInput type="currency" bind:value={initialBalance} />
-      </div>
-      <div>
-        <FormLabel>Monthly Contribution</FormLabel>
-        <NumberInput type="currency" bind:value={monthlyContribution} min={0} />
-      </div>
-      <div>
-        <FormLabel>Total Months</FormLabel>
-        <NumberInput bind:value={totalMonths} min={2} />
-      </div>
-      <div>
-        <FormLabel>Interest Tiers</FormLabel>
-        <InterestBalanceTiers bind:value={interestTiers} />
-      </div>
-      <div>
-        <FormLabel>Bonus Interest Tiers</FormLabel>
-        <BonusInterestConditions bind:value={bonusInterest} />
-      </div>
-    </section>
+<div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
+  <aside class="flex flex-col gap-4 overflow-y-auto p-3">
+    <div>
+      <FormLabel>Initial Balance</FormLabel>
+      <NumberInput type="currency" bind:value={initialBalance} />
+    </div>
+    <div>
+      <FormLabel>Monthly Contribution</FormLabel>
+      <NumberInput type="currency" bind:value={monthlyContribution} min={0} />
+    </div>
+    <div>
+      <FormLabel>Total Months</FormLabel>
+      <NumberInput bind:value={totalMonths} min={2} />
+    </div>
+    <div>
+      <FormLabel>Interest Tiers</FormLabel>
+      <InterestBalanceTiers bind:value={interestTiers} />
+    </div>
+    <div>
+      <FormLabel>Bonus Interest Tiers</FormLabel>
+      <BonusInterestConditions bind:value={bonusInterest} />
+    </div>
   </aside>
-  <main class="flex flex-col items-center justify-center-safe gap-4 p-8 *:min-h-0">
-    <p>Description/Summary of Growth here</p>
+  <main class="flex flex-col items-center justify-center-safe gap-2 *:min-h-0 *:not-[canvas]:shrink-0">
+    <div class="w-full">
+      <h1 class="text-2xl font-bold">Savings Projection</h1>
+      <p class="text-lg text-muted-foreground">Description/Summary of Growth here</p>
+    </div>
     <Chart
       type="line"
       data={{
@@ -139,8 +139,8 @@
           },
         },
         scales: {
-          y: { ticks: { callback: (tickValue) => currencyFormatter.format(+tickValue) } },
-          x: { grid: { display: false } },
+          y: { display: false },
+          x: { grid: { display: false }, border: { display: false } },
         },
         interaction: { intersect: false, mode: "index" },
         plugins: {
@@ -182,5 +182,22 @@
         },
       }}
     />
+    {#if finalMonth != null}
+      <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
+      <div class="grid w-full grid-cols-3 gap-4">
+        <div class="min-w-60 space-y-2 rounded-lg border p-4">
+          <h4 class="text-sm text-muted-foreground">Final Balance</h4>
+          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.balance)}</p>
+        </div>
+        <div class="min-w-60 space-y-2 rounded-lg border p-4">
+          <h4 class="text-sm text-muted-foreground">Total Contributions</h4>
+          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.invested)}</p>
+        </div>
+        <div class="min-w-60 space-y-2 rounded-lg border p-4">
+          <h4 class="text-sm text-muted-foreground">Total Interest Earned</h4>
+          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.interestEarned)}</p>
+        </div>
+      </div>
+    {/if}
   </main>
 </div>

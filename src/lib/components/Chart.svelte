@@ -36,7 +36,7 @@
 
   $effect(() => {
     // For some reason https://stackoverflow.com/a/74362058
-    Chart.defaults.devicePixelRatio = 4
+    Chart.defaults.devicePixelRatio = 4;
     if (defaults != null) deepMerge(Chart.defaults, defaults);
 
     chart = new Chart(canvasElem, { type, data, options, plugins });
