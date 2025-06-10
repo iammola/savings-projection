@@ -6,10 +6,10 @@
   import { FormLabel } from "$lib/components/shadcn/label";
   import { Separator } from "$lib/components/shadcn/separator";
   import NumberInput from "$lib/components/NumberInput.svelte";
+  import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
   import InterestBalanceTiers from "$lib/components/InterestBalanceTiers.svelte";
-  import BonusInterestConditions from "$lib/components/BonusInterest/BonusInterestConditions.svelte";
 
-  import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusInterest/types";
+  import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
 
   const totalAnimationDuration = 2e3;
   const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
@@ -98,8 +98,8 @@
       <InterestBalanceTiers bind:value={interestTiers} />
     </div>
     <div>
-      <FormLabel>Bonus Interest Tiers</FormLabel>
-      <BonusInterestConditions bind:value={bonusInterest} />
+      <FormLabel>Bonus Rules</FormLabel>
+      <BonusRules bind:value={bonusInterest} />
     </div>
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-2 *:min-h-0 *:not-[canvas]:shrink-0">

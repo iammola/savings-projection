@@ -2,7 +2,7 @@
   import { PlusIcon } from "@lucide/svelte";
   import { Button } from "$lib/components/shadcn/button";
 
-  import BonusInterest from "./BonusInterest.svelte";
+  import BonusInterest from "./BonusRule.svelte";
 
   import type { BONUS_INTEREST_TYPE } from "./types";
 
@@ -46,6 +46,6 @@
     <BonusInterest isAdding bind:value={isAdding} />
   {/if}
 </div>
-<Button variant="outline" size="sm" class="mt-2" onclick={addInterestItem} disabled={isAdding != null}>
-  <PlusIcon /> Add Tier
+<Button variant="ghost" size="sm" class="mt-2" onclick={addInterestItem} disabled={isAdding != null}>
+  <PlusIcon /> Add Bonus Rule
 </Button>

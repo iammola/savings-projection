@@ -27,7 +27,7 @@
 
 <div class="flex items-center justify-start gap-2">
   <Select.Root type="single" bind:value={value.type}>
-    <Select.Trigger class="grow">{displayLabel ?? "Select an option"}</Select.Trigger>
+    <Select.Trigger class="grow bg-white">{displayLabel ?? "Select an option"}</Select.Trigger>
     <Select.Content>
       {#each Object.entries(BONUS_INTEREST_TYPES) as [value, label] (value)}
         <Select.Item {value}>{label}</Select.Item>

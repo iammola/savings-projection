@@ -91,7 +91,7 @@
       </div>
     {/each}
   </div>
-  <Button variant="outline" size="sm" class="mt-2" onclick={() => addTier()}>
+  <Button variant="ghost" size="sm" class="mt-2" onclick={() => addTier()}>
     <PlusIcon /> Add Tier
   </Button>
 </Tooltip.Provider>
