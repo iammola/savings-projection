@@ -80,7 +80,7 @@
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
-  <aside class="flex flex-col gap-4 overflow-y-auto p-3">
+  <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-slate-50 p-3">
     <div>
       <FormLabel>Initial Balance</FormLabel>
       <NumberInput type="currency" bind:value={initialBalance} />
@@ -103,15 +103,14 @@
     </div>
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-2 *:min-h-0 *:not-[canvas]:shrink-0">
-    <div class="w-full">
-      <h1 class="text-2xl font-bold">Savings Projection</h1>
-      <p class="text-lg text-muted-foreground">Description/Summary of Growth here</p>
-    </div>
+    <h1 class="w-full text-2xl font-bold">Savings Projection</h1>
     <Chart
       type="line"
       data={{
         labels: data.map((d) => d.label),
-        datasets: [{ label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0 }],
+        datasets: [
+          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0, borderColor: "#000" },
+        ],
       }}
       options={{
         maintainAspectRatio: false,
@@ -140,7 +139,7 @@
         },
         scales: {
           y: { display: false },
-          x: { grid: { display: false }, border: { display: false } },
+          x: { grid: { display: false }, border: { display: false }, ticks: { align: "start" } },
         },
         interaction: { intersect: false, mode: "index" },
         plugins: {

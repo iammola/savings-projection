@@ -81,9 +81,36 @@
 
 @layer base {
   * {
-    @apply border-border font-serif;
+    @apply border-border font-['Vulf_Mono',_theme(font.mono)] tabular-nums;
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@font-face {
+  font-family: "Vulf Mono";
+  src:
+    url("./fonts/VulfMono-Regular.woff2") format("woff2"),
+    url("./fonts/VulfMono-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Vulf Mono";
+  src:
+    url("./fonts/VulfMono-Bold.woff2") format("woff2"),
+    url("./fonts/VulfMono-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Vulf Mono";
+  src:
+    url("./fonts/VulfMono-Light.woff2") format("woff2"),
+    url("./fonts/VulfMono-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
 }
