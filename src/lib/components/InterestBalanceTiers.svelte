@@ -6,6 +6,7 @@
   import { Button, buttonVariants } from "$lib/components/shadcn/button";
 
   import NumberInput from "$lib/components/NumberInput.svelte";
+  import PercentInput from "$lib/components/PercentInput.svelte";
 
   let { value = $bindable() }: Props = $props();
 
@@ -41,33 +42,13 @@
 </script>
 
 <Tooltip.Provider>
-  <div class="grid grid-cols-[max-content_minmax(0,1fr)_repeat(2,max-content)] gap-2">
-    <div class="col-span-full grid grid-cols-subgrid items-center">
-      <div></div>
-      <div class="text-sm">Balance</div>
-      <div class="text-sm">Interest</div>
-      <div></div>
-    </div>
+  <div class="grid grid-cols-[minmax(0,1fr)_repeat(2,max-content)] gap-2">
     {#each storedTiers as tier, tierIndex (tierIndex)}
       <div class="col-span-full grid grid-cols-subgrid items-center">
-        <div class="w-5 text-center text-sm">
-          {#if invalidTierIndex === tierIndex}
-            <Tooltip.Root>
-              <Tooltip.Trigger class="text-red-500">
-                <CircleAlertIcon class="aspect-square size-full" />
-              </Tooltip.Trigger>
-              <Tooltip.Content collisionPadding={10}>The balance cannot be more than the next item</Tooltip.Content>
-            </Tooltip.Root>
-          {:else}
-            {tierIndex + 1}.
-          {/if}
-        </div>
         <div>
           <NumberInput type="currency" bind:value={tier.min} min={tierIndex < 1 ? 0 : value[tierIndex - 1].min} />
         </div>
-        <div class="w-28">
-          <NumberInput type="percent" bind:value={tier.rate} min={0} max={1} />
-        </div>
+        <PercentInput class="max-w-28" bind:value={tier.rate} />
         <div>
           <Popover.Root>
             <Popover.Trigger
@@ -88,6 +69,10 @@
             </Popover.Content>
           </Popover.Root>
         </div>
+        {#if invalidTierIndex === tierIndex}
+          <!-- TODO -->
+          <div class="col-span-full text-xs text-red-500">The balance cannot be more than the next item</div>
+        {/if}
       </div>
     {/each}
   </div>
