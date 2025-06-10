@@ -5,7 +5,7 @@
   import * as Popover from "$lib/components/shadcn/popover";
   import { Button, buttonVariants } from "$lib/components/shadcn/button";
 
-  import NumberInput from "$lib/components/NumberInput.svelte";
+  import NumberInput from "$lib/components/CurrencyInput.svelte";
   import PercentInput from "$lib/components/PercentInput.svelte";
 
   let { value = $bindable() }: Props = $props();
@@ -45,9 +45,7 @@
   <div class="grid grid-cols-[minmax(0,1fr)_repeat(2,max-content)] gap-2">
     {#each storedTiers as tier, tierIndex (tierIndex)}
       <div class="col-span-full grid grid-cols-subgrid items-center">
-        <div>
-          <NumberInput type="currency" bind:value={tier.min} min={tierIndex < 1 ? 0 : value[tierIndex - 1].min} />
-        </div>
+        <NumberInput bind:value={tier.min} min={tierIndex < 1 ? 0 : value[tierIndex - 1].min} />
         <PercentInput class="max-w-28" bind:value={tier.rate} />
         <div>
           <Popover.Root>

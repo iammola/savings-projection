@@ -8,8 +8,10 @@
   import { Separator } from "$lib/components/shadcn/separator";
   import { Button, buttonVariants } from "$lib/components/shadcn/button";
 
+  import PercentInput from "$lib/components/PercentInput.svelte";
+  import CurrencyInput from "$lib/components/CurrencyInput.svelte";
+
   import type { BONUS_INTEREST_TYPE } from "./types";
-  import NumberInput from "../NumberInput.svelte";
 
   const { isAdding = false, value = $bindable(), onDelete }: Props = $props();
 
@@ -27,7 +29,7 @@
 
 <div class="flex items-center justify-start gap-2">
   <Select.Root type="single" bind:value={value.type}>
-    <Select.Trigger class="grow bg-white">{displayLabel ?? "Select an option"}</Select.Trigger>
+    <Select.Trigger class="grow bg-background">{displayLabel ?? "Select an option"}</Select.Trigger>
     <Select.Content>
       {#each Object.entries(BONUS_INTEREST_TYPES) as [value, label] (value)}
         <Select.Item {value}>{label}</Select.Item>
@@ -62,20 +64,13 @@
           {:else if value.type === "MIN_CONTRIBUTION"}
             <div class="col-span-full grid grid-cols-subgrid items-center">
               <FormLabel for="amount">Min Amount</FormLabel>
-              <NumberInput id="amount" type="currency" bind:value={value.data.amount} class="col-start-2 -col-end-1" />
+              <CurrencyInput id="amount" bind:value={value.data.amount} class="col-start-2 -col-end-1" />
             </div>
           {/if}
           <Separator class="col-span-full my-1.5" />
           <div class="col-span-full grid grid-cols-subgrid items-center">
             <FormLabel for="interest">Interest</FormLabel>
-            <NumberInput
-              id="interest"
-              type="percent"
-              min={0}
-              max={1}
-              bind:value={value.rate}
-              class="col-start-2 -col-end-1"
-            />
+            <PercentInput id="interest" bind:value={value.rate} class="col-start-2 -col-end-1" />
           </div>
         </div>
         <Separator />

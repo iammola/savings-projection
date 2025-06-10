@@ -2,12 +2,12 @@
   import { Tooltip } from "chart.js";
   import { easingEffects } from "chart.js/helpers";
 
-  import Chart from "$lib/components/Chart.svelte";
   import { FormLabel } from "$lib/components/shadcn/label";
-  import { Separator } from "$lib/components/shadcn/separator";
-  import NumberInput from "$lib/components/NumberInput.svelte";
+
+  import Chart from "$lib/components/Chart.svelte";
+  import CurrencyInput from "$lib/components/CurrencyInput.svelte";
+  import InterestTiers from "$lib/components/InterestTiers.svelte";
   import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
-  import InterestBalanceTiers from "$lib/components/InterestBalanceTiers.svelte";
 
   import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
 
@@ -83,19 +83,19 @@
   <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-slate-50 p-3">
     <div>
       <FormLabel>Initial Balance</FormLabel>
-      <NumberInput type="currency" bind:value={initialBalance} />
+      <CurrencyInput bind:value={initialBalance} min={0} />
     </div>
     <div>
       <FormLabel>Monthly Contribution</FormLabel>
-      <NumberInput type="currency" bind:value={monthlyContribution} min={0} />
+      <CurrencyInput bind:value={monthlyContribution} min={0} />
     </div>
     <div>
       <FormLabel>Total Months</FormLabel>
-      <NumberInput bind:value={totalMonths} min={2} />
+      <CurrencyInput bind:value={totalMonths} min={2} />
     </div>
     <div>
       <FormLabel>Interest Tiers</FormLabel>
-      <InterestBalanceTiers bind:value={interestTiers} />
+      <InterestTiers bind:value={interestTiers} />
     </div>
     <div>
       <FormLabel>Bonus Rules</FormLabel>

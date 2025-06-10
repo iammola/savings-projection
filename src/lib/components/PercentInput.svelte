@@ -1,6 +1,7 @@
 <!-- Ported from https://21st.dev/camwebby/numeric-scrubber/default -->
 <script lang="ts">
   import { cn } from "$lib/utils";
+
   import type { EventHandler, HTMLInputAttributes } from "svelte/elements";
 
   /**
@@ -122,7 +123,7 @@
 <div
   onpointerdown={handlePointerDown}
   class={cn(
-    "flex h-10 min-w-fit items-center justify-end gap-2 rounded-md border border-input bg-background px-3 py-2 ring-offset-background select-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+    "flex h-10 min-w-0 items-center justify-end gap-2 rounded-md border border-input bg-background px-3 py-2 ring-offset-background select-none *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
     className,
     "cursor-ew-resize",
   )}
