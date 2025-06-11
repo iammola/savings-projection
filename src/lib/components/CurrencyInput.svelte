@@ -1,5 +1,6 @@
 <script lang="ts">
-  // TODO: Implement Stepper Buttons
+  import { MinusIcon, PlusIcon } from "@lucide/svelte";
+
   import { cn } from "$lib/utils";
 
   import type { EventHandler, HTMLInputAttributes, KeyboardEventHandler } from "svelte/elements";
@@ -8,8 +9,10 @@
     /**
      * Current numeric value
      */
-    value?: number;
+    value: number;
   }
+
+  const STEP_AMOUNT = 100;
 
   let { value = $bindable(), class: className, ...rest }: Props = $props();
 
@@ -36,23 +39,33 @@
     e.preventDefault();
   };
 
-  function formatValue(value: number | undefined) {
-    if (value == null) return "";
+  function formatValue(value: number) {
     return formatter.format(value).replace(currency?.value!, "");
+  }
+
+  function stepper(action: "INC" | "DEC") {
+    let change = STEP_AMOUNT;
+    if (action === "DEC") change *= -1;
+
+    value += change;
   }
 </script>
 
 <div
   class={cn(
-    "flex h-10 min-w-0 items-center justify-start gap-2 rounded-md border border-input bg-background px-3 py-2 ring-offset-background select-none *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+    "flex h-10 min-w-0 items-center justify-start gap-2 overflow-hidden rounded-md border border-input bg-background ring-offset-background select-none [--padding-x:theme(spacing.3)] [--padding-y:theme(spacing.2)] *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
     className,
   )}
 >
-  <span class="flex items-center leading-none text-muted-foreground select-none">{currency?.value}</span>
+  <span
+    class="flex shrink-0 items-center py-(--padding-y) pl-(--padding-x) leading-none text-muted-foreground select-none"
+  >
+    {currency?.value}
+  </span>
   {#key formatted}
     <input
       type="text"
-      class="flex grow [appearance:textfield] text-base placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+      class="flex grow [appearance:textfield] py-(--padding-y) text-base placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
       defaultValue={formatted}
       placeholder={formatValue(0)}
       onkeydown={onKeyDown}
@@ -61,4 +74,24 @@
       {...rest}
     />
   {/key}
+  <div
+    class="flex h-full shrink-0 divide-x border-l *:grid *:h-full *:cursor-pointer *:place-items-center *:px-2 *:text-foreground *:hover:bg-secondary/90 *:[&_svg]:size-4"
+  >
+    <button
+      type="button"
+      aria-label="Decrement"
+      title={`Remove ${formatter.format(STEP_AMOUNT)}`}
+      onclick={() => stepper("DEC")}
+    >
+      <MinusIcon />
+    </button>
+    <button
+      type="button"
+      aria-label="Increment"
+      title={`Add ${formatter.format(STEP_AMOUNT)}`}
+      onclick={() => stepper("INC")}
+    >
+      <PlusIcon />
+    </button>
+  </div>
 </div>

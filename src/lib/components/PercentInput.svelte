@@ -136,5 +136,5 @@
     onchange={handleInputChange}
     {...rest}
   />
-  <span class="flex items-center leading-none text-muted-foreground select-none">%</span>
+  <span class="flex shrink-0 items-center leading-none text-muted-foreground select-none">%</span>
 </div>
