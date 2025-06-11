@@ -38,10 +38,7 @@
     { type: "MIN_CONTRIBUTION", rate: 0.25, data: { amount: 200 } }, // Give an additional 0.25% interest if the closing balance is 200 more than the previous month
   ]);
 
-  const data = $derived(calculateAccountGrowth(initialBalance, monthlyContribution, totalMonths));
-  const finalMonth = $derived(data.at(-1));
-
-  function calculateAccountGrowth(initialBalance: number, monthlyContribution: number, totalMonths: number) {
+  const data = $derived.by(() => {
     const FALLBACK = { label: "", interestEarned: 0, invested: initialBalance, balance: initialBalance };
 
     return Array.from({ length: totalMonths }).reduce<Array<typeof FALLBACK>>((acc, _, monthIndex) => {
@@ -76,7 +73,8 @@
         },
       ];
     }, []);
-  }
+  });
+  const finalMonth = $derived(data.at(-1));
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
