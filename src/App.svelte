@@ -26,11 +26,11 @@
   let monthlyContribution = $state(300);
   let totalMonths = $state(12 /* 1 Year */);
   let interestTiers = $state([
-    { min: 0, rate: 0.25 },
-    { min: 10e3, rate: 0.3 },
-    { min: 25e3, rate: 0.55 },
-    { min: 10e4, rate: 0.8 },
-    { min: 5e5, rate: 1 },
+    { min: 0, rate: 0.25, tierId: Math.random().toString(36) },
+    { min: 10e3, rate: 0.3, tierId: Math.random().toString(36) },
+    { min: 25e3, rate: 0.55, tierId: Math.random().toString(36) },
+    { min: 10e4, rate: 0.8, tierId: Math.random().toString(36) },
+    { min: 5e5, rate: 1, tierId: Math.random().toString(36) },
   ]);
 
   let bonusInterest = $state<BONUS_INTEREST_TYPE[]>([

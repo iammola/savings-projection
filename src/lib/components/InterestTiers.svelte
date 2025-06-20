@@ -28,7 +28,7 @@
 
     const min = prevMin + Math.abs(nextMin - prevMin) / 2;
 
-    storedTiers.splice(index, 0, { min, rate: 0 });
+    storedTiers.splice(index, 0, { min, rate: 0, tierId: Math.random().toString(36) });
   }
 
   function deleteTier(index: number) {
@@ -37,13 +37,13 @@
   }
 
   interface Props {
-    value: Array<{ min: number; rate: number }>;
+    value: Array<{ min: number; rate: number; tierId: string }>;
   }
 </script>
 
 <Tooltip.Provider>
   <div class="grid grid-cols-[minmax(0,1fr)_repeat(2,max-content)] gap-2">
-    {#each storedTiers as tier, tierIndex (tierIndex)}
+    {#each storedTiers as tier, tierIndex (tier.tierId)}
       <div class="col-span-full grid grid-cols-subgrid items-center">
         <NumberInput bind:value={tier.min} min={tierIndex < 1 ? 0 : value[tierIndex - 1].min} />
         <PercentInput class="max-w-28" bind:value={tier.rate} />
