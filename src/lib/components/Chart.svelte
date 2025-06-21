@@ -1,54 +1,32 @@
-<script lang="ts" generics="Type extends ChartType">
-  import { Chart } from "chart.js/auto";
+<script lang="ts" generics="Data">
+  import { Area, Axis, Chart, Layer, LinearGradient, Text } from "layerchart";
 
-  import { cn } from "$lib/utils";
-
-  import type { HTMLCanvasAttributes } from "svelte/elements";
-  import type { ChartData, ChartOptions, ChartType, Defaults, Plugin } from "chart.js";
-
-  interface Props extends HTMLCanvasAttributes {
-    type: Type;
-    data: ChartData<Type>;
-    options?: ChartOptions<Type>;
-    plugins?: Plugin<Type>[];
-    defaults?: Partial<Defaults>;
+  interface Props {
+    data: Data[];
   }
 
-  const { type, data, options, plugins, defaults, ...rest }: Props = $props();
-
-  let canvasElem: HTMLCanvasElement;
-  let chart: Chart<Type>;
-
-  function deepMerge<T>(left: T, right: T) {
-    for (const key in right) {
-      if (!Object.prototype.hasOwnProperty.call(right, key)) return;
-
-      const element = right[key];
-
-      if (element != null && typeof element === "object") {
-        if (typeof left[key] !== "object") left[key] = {} as never;
-        deepMerge(left[key] as Record<string, unknown>, element as Record<string, unknown>);
-      } else {
-        left[key] = element;
-      }
-    }
-  }
-
-  $effect(() => {
-    // For some reason https://stackoverflow.com/a/74362058
-    Chart.defaults.devicePixelRatio = 4;
-    if (defaults != null) deepMerge(Chart.defaults, defaults);
-
-    chart = new Chart(canvasElem, { type, data, options, plugins });
-    return () => chart.destroy();
-  });
-
-  $effect(() => {
-    if (chart) {
-      chart.data = data;
-      chart.update();
-    }
-  });
+  const { data }: Props = $props();
 </script>
 
-<canvas bind:this={canvasElem} {...rest} class={cn(rest.class, "[box-sizing:initial]!")}></canvas>
+<div class="w-full flex-1 rounded-lg bg-linear-to-b from-[#3b6978] to-[#204051]">
+  <Chart {data} x="idx" y="balance" yNice>
+    <Layer type="svg">
+      <Axis
+        placement="bottom"
+        grid={{ style: "stroke-dasharray: 2" }}
+        rule
+        format={(v) => (Number.isInteger(v) ? `Month ${v + 1}` : "")}
+        ticks={(scale) => scale.ticks?.().slice(0, -1)}
+      >
+        {#snippet tickLabel({ props })}
+          <Text {...props} textAnchor="start" />
+        {/snippet}
+      </Axis>
+      <LinearGradient class="from-[#edffea] to-[#edffea]/10" vertical>
+        {#snippet children({ gradient })}
+          <Area line={{ class: "stroke-1", stroke: gradient }} fill={gradient} />
+        {/snippet}
+      </LinearGradient>
+    </Layer>
+  </Chart>
+</div>

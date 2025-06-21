@@ -32,7 +32,7 @@
     "vite": "^6.3.3"
   },
   "dependencies": {
-    "chart.js": "^4.4.9",
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "layerchart": "2.0.0-next.23"
   }
 }

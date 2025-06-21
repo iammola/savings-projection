@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { Tooltip } from "chart.js";
-  import { easingEffects } from "chart.js/helpers";
-
   import { FormLabel } from "$lib/components/shadcn/label";
 
   import Chart from "$lib/components/Chart.svelte";
@@ -11,11 +8,6 @@
   import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
 
   import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
-
-  const totalAnimationDuration = 2e3;
-  const animationDuration = (ctx: { dataIndex: number } | { index: number }) =>
-    (easingEffects.easeInOutSine(("index" in ctx ? ctx.index : ctx.dataIndex) / data.length) * totalAnimationDuration) /
-    data.length;
 
   const currencyFormatter = new Intl.NumberFormat(undefined, {
     style: "currency",
@@ -67,6 +59,7 @@
       return [
         ...acc,
         {
+          idx: monthIndex,
           label: `Month ${monthIndex + 1}`,
           invested: nextInvested,
           interestEarned: nextInterestEarned,
@@ -101,85 +94,9 @@
       <BonusRules bind:value={bonusInterest} />
     </div>
   </aside>
-  <main class="flex flex-col items-center justify-center-safe gap-2 *:min-h-0 *:not-[canvas]:shrink-0">
+  <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold">Savings Projection</h1>
-    <Chart
-      type="line"
-      data={{
-        labels: data.map((d) => d.label),
-        datasets: [
-          { label: "Balance", data: data.map((d) => d.balance), normalized: true, pointRadius: 0, borderColor: "#000" },
-        ],
-      }}
-      options={{
-        maintainAspectRatio: false,
-        animations: {
-          x: {
-            from: NaN,
-            easing: "linear",
-            duration: animationDuration,
-            delay(ctx) {
-              if (ctx.type !== "data" || ctx.mode !== "default") return 0;
-
-              const totalDelay = ctx.dataIndex * 20;
-              return totalDelay > totalAnimationDuration ? totalAnimationDuration : totalDelay;
-            },
-          },
-          y: {
-            easing: "linear",
-            duration: animationDuration,
-            from: (ctx) => {
-              const dataIndex = "index" in ctx ? (ctx.index as number) : ctx.dataIndex;
-              return dataIndex < 1 ?
-                  ctx.chart.scales.y.getPixelForValue(100)
-                : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[dataIndex - 1].getProps(["y"], true).y;
-            },
-          },
-        },
-        scales: {
-          y: { display: false },
-          x: { grid: { display: false }, border: { display: false }, ticks: { align: "start" } },
-        },
-        interaction: { intersect: false, mode: "index" },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              footer: ([a]) => `Interest Earned: ${currencyFormatter.format(data[a.dataIndex].interestEarned)}`,
-            },
-          },
-        },
-      }}
-      plugins={[
-        Tooltip,
-        {
-          id: "hoverLines",
-          beforeTooltipDraw(chart, args) {
-            args.tooltip.dataPoints.forEach(({ dataset, element }, index) => {
-              chart.ctx.save();
-
-              chart.ctx.lineWidth = 2;
-              chart.ctx.setLineDash([5, 7]);
-              chart.ctx.strokeStyle = typeof dataset.borderColor === "string" ? dataset.borderColor : "#000";
-
-              chart.ctx.beginPath();
-              chart.ctx.moveTo(chart.chartArea.left, element.y);
-              chart.ctx.lineTo(chart.chartArea.right, element.y);
-              chart.ctx.stroke();
-
-              chart.ctx.restore();
-            });
-          },
-        },
-      ]}
-      defaults={{
-        font: {
-          family: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
-          size: 14,
-          lineHeight: 1.25 / 0.875,
-        },
-      }}
-    />
+    <Chart {data} />
     {#if finalMonth != null}
       <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
       <div class="grid w-full grid-cols-3 gap-4">
