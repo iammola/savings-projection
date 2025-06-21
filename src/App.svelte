@@ -5,6 +5,7 @@
   import { FormLabel } from "$lib/components/shadcn/label";
 
   import Chart from "$lib/components/Chart.svelte";
+  import { Input } from "$lib/components/shadcn/input";
   import CurrencyInput from "$lib/components/CurrencyInput.svelte";
   import InterestTiers from "$lib/components/InterestTiers.svelte";
   import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
@@ -89,7 +90,7 @@
     </div>
     <div>
       <FormLabel>Total Months</FormLabel>
-      <CurrencyInput bind:value={totalMonths} min={2} />
+      <Input type="number" bind:value={totalMonths} min={2} />
     </div>
     <div>
       <FormLabel>Interest Tiers</FormLabel>
