@@ -99,19 +99,13 @@
     <Chart {data} />
     {#if finalMonth != null}
       <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
-      <div class="grid w-full grid-cols-3 gap-4">
-        <div class="min-w-60 space-y-2 rounded-lg border p-4">
-          <h4 class="text-sm text-muted-foreground">Final Balance</h4>
-          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.balance)}</p>
-        </div>
-        <div class="min-w-60 space-y-2 rounded-lg border p-4">
-          <h4 class="text-sm text-muted-foreground">Total Contributions</h4>
-          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.invested)}</p>
-        </div>
-        <div class="min-w-60 space-y-2 rounded-lg border p-4">
-          <h4 class="text-sm text-muted-foreground">Total Interest Earned</h4>
-          <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(finalMonth.interestEarned)}</p>
-        </div>
+      <div class="flex w-full flex-wrap gap-4">
+        {#each [{ title: "Final Balance", value: finalMonth.balance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.interestEarned }] as { title, value } (title)}
+          <div class="flex-1 space-y-2 rounded-lg border p-4">
+            <h4 class="text-sm text-muted-foreground">{title}</h4>
+            <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(value)}</p>
+          </div>
+        {/each}
       </div>
     {/if}
   </main>
