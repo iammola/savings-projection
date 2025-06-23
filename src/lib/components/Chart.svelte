@@ -12,9 +12,9 @@
   <Chart {data} x="idx" y="balance" yNice>
     <Layer type="svg">
       <Axis
+        tickMarks={false}
         placement="bottom"
-        grid={{ style: "stroke-dasharray: 2" }}
-        rule
+        grid={{ style: "stroke-dasharray: 1,3", class: "stroke-[#edffea]/20" }}
         format={(v) => (Number.isInteger(v) ? `Month ${v + 1}` : "")}
         ticks={(scale) => scale.ticks?.().slice(0, -1)}
       >
