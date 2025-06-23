@@ -75,6 +75,14 @@
   --rounded-sm: calc(var(--radius) - 4px);
 }
 
+/* LayerChart */
+@theme inline {
+  --color-surface-content: var(--card-foreground);
+  --color-surface-100: var(--background);
+  --color-surface-200: var(---muted);
+  --color-surface-300: var(--background);
+}
+
 @utility container {
   padding-inline: 2rem;
   margin-inline: auto;
