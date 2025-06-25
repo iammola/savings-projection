@@ -115,7 +115,7 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold">Savings Projection</h1>
-    <Chart {data} />
+    <Chart {data} x="idx" y="startingBalance" />
     {#if finalMonth != null}
       <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
       <div class="flex w-full flex-wrap gap-4">

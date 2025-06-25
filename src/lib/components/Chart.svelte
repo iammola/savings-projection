@@ -1,11 +1,13 @@
 <script lang="ts" generics="Data">
-  import { Area, Axis, Chart, Layer, LinearGradient, Text } from "layerchart";
+  import { Area, Axis, Chart, Layer, LinearGradient } from "layerchart";
 
   interface Props {
+    x: Extract<keyof Data, string>;
+    y: Extract<keyof Data, string>;
     data: Data[];
   }
 
-  const { data }: Props = $props();
+  const { data, x, y }: Props = $props();
 
   // @ts-expect-error Intl.DurationFormat (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat) not typed
   const timeFormatter = new Intl.DurationFormat(undefined);
@@ -19,19 +21,16 @@
 </script>
 
 <div class="w-full flex-1 rounded-lg bg-linear-to-b from-[#3b6978] to-[#204051]">
-  <Chart {data} x="idx" y="balance" yNice>
+  <Chart {data} {x} {y} yNice>
     <Layer type="svg">
       <Axis
         tickMarks={false}
         tickSpacing={125}
         placement="bottom"
+        tickLabelProps={{ dx: -10, verticalAnchor: "start" }}
         grid={{ style: "stroke-dasharray: 1,3", class: "stroke-[#edffea]/20" }}
         format={formatMonthTick}
-      >
-        {#snippet tickLabel({ props })}
-          <Text {...props} textAnchor="start" />
-        {/snippet}
-      </Axis>
+      />
       <LinearGradient class="from-[#edffea]/10 to-[#edffea]/50" vertical>
         {#snippet children({ gradient })}
           <Area line={{ class: "stroke-1", stroke: gradient }} fill={gradient} />
