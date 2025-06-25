@@ -7,9 +7,14 @@
 
   const { data }: Props = $props();
 
+  // @ts-expect-error Intl.DurationFormat (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat) not typed
+  const timeFormatter = new Intl.DurationFormat(undefined);
+
   function formatMonthTick(v: unknown) {
-    if (typeof v !== "number" || !Number.isInteger(v) || v === data.length - 1) return "";
-    return `Month ${v + 1}`;
+    if (typeof v !== "number" || !Number.isInteger(v) || v === 0) return "";
+    return timeFormatter
+      .formatToParts({ years: Math.trunc(v / 12), months: v % 12 })
+      .reduce((acc: string, cur: { value: string }) => acc + (cur.value.trim() === "," ? "\n" : cur.value), "");
   }
 </script>
 
@@ -18,7 +23,7 @@
     <Layer type="svg">
       <Axis
         tickMarks={false}
-        tickSpacing={100}
+        tickSpacing={125}
         placement="bottom"
         grid={{ style: "stroke-dasharray: 1,3", class: "stroke-[#edffea]/20" }}
         format={formatMonthTick}
