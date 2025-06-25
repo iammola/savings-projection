@@ -16,6 +16,7 @@
   });
 
   let initialBalance = $state(2500);
+  let monthlyWithdrawal = $state(0);
   let monthlyContribution = $state(300);
   let totalMonths = $state(12 /* 1 Year */);
   let interestTiers = $state([
@@ -32,10 +33,12 @@
   ]);
 
   const data = $derived.by(() => {
-    const FALLBACK = { label: "", interestEarned: 0, invested: initialBalance, balance: initialBalance };
+    const result: MonthData[] = [
+      { idx: 0, invested: initialBalance, interestEarnedInMonth: 0, totalInterestEarned: 0, balance: initialBalance },
+    ];
+    let previous = result[0];
 
-    return Array.from({ length: totalMonths }).reduce<Array<typeof FALLBACK>>((acc, _, monthIndex) => {
-      const previous = acc[monthIndex - 1] ?? FALLBACK;
+    for (let monthIndex = 1; monthIndex <= totalMonths; monthIndex++) {
       const interestRate = [
         interestTiers.findLast((tier) => tier.min < previous.balance)?.rate ?? 0,
         ...bonusInterest.flatMap((i) => {
@@ -53,22 +56,34 @@
         }),
       ].reduce((acc, cur) => acc + cur / (12 * 100), 0);
 
-      const nextInvested = +(previous.invested + monthlyContribution).toFixed(2);
-      const nextInterestEarned = +(previous.interestEarned + previous.balance * interestRate).toFixed(2);
+      const interestEarned = +(previous.balance * interestRate).toFixed(2);
 
-      return [
-        ...acc,
-        {
-          idx: monthIndex,
-          label: `Month ${monthIndex + 1}`,
-          invested: nextInvested,
-          interestEarned: nextInterestEarned,
-          balance: nextInterestEarned + nextInvested,
-        },
-      ];
-    }, []);
+      const totalInvested = +(previous.invested + monthlyContribution - monthlyWithdrawal).toFixed(2);
+      const totalInterestEarned = +(previous.totalInterestEarned + interestEarned).toFixed(2);
+      const totalBalance = totalInterestEarned + totalInvested;
+
+      previous = {
+        idx: monthIndex,
+        balance: totalBalance,
+        invested: totalInvested,
+        interestEarnedInMonth: interestEarned,
+        totalInterestEarned: totalInterestEarned,
+      };
+
+      result.push(previous);
+    }
+
+    return result;
   });
   const finalMonth = $derived(data.at(-1));
+
+  interface MonthData {
+    idx: number;
+    interestEarnedInMonth: number;
+    totalInterestEarned: number;
+    invested: number;
+    balance: number;
+  }
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
@@ -80,6 +95,10 @@
     <div>
       <FormLabel>Monthly Contribution</FormLabel>
       <CurrencyInput bind:value={monthlyContribution} min={0} />
+    </div>
+    <div>
+      <FormLabel>Monthly Withdrawals</FormLabel>
+      <CurrencyInput bind:value={monthlyWithdrawal} min={0} />
     </div>
     <div>
       <FormLabel>Total Months</FormLabel>
@@ -100,7 +119,7 @@
     {#if finalMonth != null}
       <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
       <div class="flex w-full flex-wrap gap-4">
-        {#each [{ title: "Final Balance", value: finalMonth.balance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.interestEarned }] as { title, value } (title)}
+        {#each [{ title: "Final Balance", value: finalMonth.balance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
           <div class="flex-1 space-y-2 rounded-lg border p-4">
             <h4 class="text-sm text-muted-foreground">{title}</h4>
             <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(value)}</p>
