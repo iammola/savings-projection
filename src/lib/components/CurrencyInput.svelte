@@ -48,6 +48,8 @@
     if (action === "DEC") change *= -1;
 
     value += change;
+    if (rest.max != null) value = Math.min(value, +rest.max);
+    if (rest.min != null) value = Math.max(value, +rest.min);
   }
 </script>
 
