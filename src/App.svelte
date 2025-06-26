@@ -34,13 +34,22 @@
 
   const data = $derived.by(() => {
     const result: MonthData[] = [
-      { idx: 0, invested: initialBalance, interestEarnedInMonth: 0, totalInterestEarned: 0, balance: initialBalance },
+      {
+        idx: 0,
+        invested: initialBalance,
+        startingBalance: initialBalance,
+        interestEarnedInMonth: 0,
+        totalInterestEarned: 0,
+      },
     ];
     let previous = result[0];
 
+    let completed = true;
+    const monthDiff = monthlyContribution - monthlyWithdrawal;
+
     for (let monthIndex = 1; monthIndex <= totalMonths; monthIndex++) {
       const interestRate = [
-        interestTiers.findLast((tier) => tier.min < previous.balance)?.rate ?? 0,
+        interestTiers.findLast((tier) => tier.min < previous.startingBalance)?.rate ?? 0,
         ...bonusInterest.flatMap((i) => {
           switch (i.type) {
             case "IN_ACCOUNT_AGE":
@@ -56,34 +65,50 @@
         }),
       ].reduce((acc, cur) => acc + cur / (12 * 100), 0);
 
-      const interestEarned = +(previous.balance * interestRate).toFixed(2);
+      const interestEarned = +(previous.startingBalance * interestRate).toFixed(2);
 
-      const totalInvested = +(previous.invested + monthlyContribution - monthlyWithdrawal).toFixed(2);
-      const totalInterestEarned = +(previous.totalInterestEarned + interestEarned).toFixed(2);
-      const totalBalance = totalInterestEarned + totalInvested;
+      // Removes the  monthly withdrawal only if enough, allowing the contribution and interest to build it up
+      /*
+        let invested = previous.invested + monthlyContribution;
+        if (invested >= monthlyWithdrawal) invested -= monthlyWithdrawal;
+
+        let startingBalance = previous.startingBalance + interestEarned + monthlyContribution;
+        if (startingBalance >= monthlyWithdrawal) startingBalance -= monthlyWithdrawal;
+       */
+
+      // Removes whatever is left in account regardless of it being enough. So nothing else to build interest off
+      const invested = Math.max(0, previous.invested + monthDiff);
+      const startingBalance = Math.max(0, previous.startingBalance + interestEarned + monthDiff);
 
       previous = {
         idx: monthIndex,
-        balance: totalBalance,
-        invested: totalInvested,
+        invested,
+        startingBalance,
         interestEarnedInMonth: interestEarned,
-        totalInterestEarned: totalInterestEarned,
+        totalInterestEarned: previous.totalInterestEarned + interestEarned,
       };
 
       result.push(previous);
+
+      if (startingBalance === 0) {
+        completed = false;
+        result.push({
+          idx: monthIndex + 2,
+          invested: 0,
+          startingBalance: 0,
+          interestEarnedInMonth: 0,
+          totalInterestEarned: previous.totalInterestEarned,
+        });
+
+        break;
+      }
     }
 
-    return result;
+    return { result, completed };
   });
-  const finalMonth = $derived(data.at(-1));
 
-  interface MonthData {
-    idx: number;
-    interestEarnedInMonth: number;
-    totalInterestEarned: number;
-    invested: number;
-    balance: number;
-  }
+  const finalMonth = $derived(data.result.at(-1));
+  const depletedMonth = $derived(data.completed ? undefined : data.result.at(-2));
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
@@ -99,6 +124,9 @@
     <div>
       <FormLabel>Monthly Withdrawals</FormLabel>
       <CurrencyInput bind:value={monthlyWithdrawal} min={0} />
+      {#if monthlyWithdrawal > monthlyContribution}
+        <p class="text-xs text-muted-foreground">The simulation may not complete</p>
+      {/if}
     </div>
     <div>
       <FormLabel>Total Months</FormLabel>
@@ -115,11 +143,19 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold">Savings Projection</h1>
-    <Chart {data} x="idx" y="startingBalance" />
+    <Chart x="idx" y="startingBalance" data={data.result} errorRange={depletedMonth == null ? [] : [depletedMonth]} />
     {#if finalMonth != null}
-      <h3 class="pb2 w-full pt-4 text-2xl font-bold">Summary</h3>
+      <h3 class="w-full pt-4 text-2xl font-bold">
+        Summary
+        {#if depletedMonth != null}
+          <span class="text-sm text-muted-foreground">
+            (Account balance will be depleted after {depletedMonth.idx}
+            {depletedMonth.idx === 1 ? "month" : "months"})
+          </span>
+        {/if}
+      </h3>
       <div class="flex w-full flex-wrap gap-4">
-        {#each [{ title: "Final Balance", value: finalMonth.balance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
+        {#each [{ title: "Final Balance", value: finalMonth.startingBalance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
           <div class="flex-1 space-y-2 rounded-lg border p-4">
             <h4 class="text-sm text-muted-foreground">{title}</h4>
             <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(value)}</p>
