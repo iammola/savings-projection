@@ -67,15 +67,6 @@
 
       const interestEarned = +(previous.startingBalance * interestRate).toFixed(2);
 
-      // Removes the  monthly withdrawal only if enough, allowing the contribution and interest to build it up
-      /*
-        let invested = previous.invested + monthlyContribution;
-        if (invested >= monthlyWithdrawal) invested -= monthlyWithdrawal;
-
-        let startingBalance = previous.startingBalance + interestEarned + monthlyContribution;
-        if (startingBalance >= monthlyWithdrawal) startingBalance -= monthlyWithdrawal;
-       */
-
       // Removes whatever is left in account regardless of it being enough. So nothing else to build interest off
       const invested = Math.max(0, previous.invested + monthDiff);
       const startingBalance = Math.max(0, previous.startingBalance + interestEarned + monthDiff);
