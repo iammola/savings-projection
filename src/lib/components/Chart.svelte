@@ -1,13 +1,14 @@
-<script lang="ts" generics="Data">
-  import { Area, Axis, Chart, Layer, LinearGradient } from "layerchart";
+<script lang="ts">
+  import { AnnotationLine, AnnotationRange, Area, Axis, Chart, Layer, LinearGradient } from "layerchart";
 
   interface Props {
-    x: Extract<keyof Data, string>;
-    y: Extract<keyof Data, string>;
-    data: Data[];
+    x: Extract<keyof MonthData, string>;
+    y: Extract<keyof MonthData, string>;
+    data: MonthData[];
+    errorRange: Array<Pick<MonthData, "idx">>;
   }
 
-  const { data, x, y }: Props = $props();
+  const { data, x, y, errorRange }: Props = $props();
 
   // @ts-expect-error Intl.DurationFormat (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat) not typed
   const timeFormatter = new Intl.DurationFormat(undefined);
@@ -36,6 +37,10 @@
           <Area line={{ class: "stroke-1", stroke: gradient }} fill={gradient} />
         {/snippet}
       </LinearGradient>
+      {#each errorRange as range}
+        <AnnotationRange x={[range.idx, null]} class="fill-[#F86624]/30" />
+        <AnnotationLine x={range.idx} props={{ line: { class: "[stroke-dasharray:2,2] stroke-[#F86624]" } }} />
+      {/each}
     </Layer>
   </Chart>
 </div>
