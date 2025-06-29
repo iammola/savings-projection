@@ -130,7 +130,7 @@
 >
   <input
     type="number"
-    class="flex field-sizing-content [appearance:textfield] text-base placeholder:text-muted-foreground hover:cursor-ew-resize focus-visible:outline-hidden active:cursor-none active:caret-transparent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+    class="flex field-sizing-content [appearance:textfield] text-base text-foreground placeholder:text-muted-foreground hover:cursor-ew-resize focus-visible:outline-hidden active:cursor-none active:caret-transparent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
     {step}
     value={value.toFixed(decimals)}
     onchange={handleInputChange}

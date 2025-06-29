@@ -102,41 +102,41 @@
   const depletedMonth = $derived(data.completed ? undefined : data.result.at(-2));
 </script>
 
-<div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 p-8 *:min-h-0">
-  <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-slate-50 p-3">
+<div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 bg-background p-8 *:min-h-0">
+  <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-secondary p-3">
     <div>
-      <FormLabel>Initial Balance</FormLabel>
+      <FormLabel class="text-foreground">Initial Balance</FormLabel>
       <CurrencyInput bind:value={initialBalance} min={0} />
     </div>
     <div>
-      <FormLabel>Monthly Contribution</FormLabel>
+      <FormLabel class="text-foreground">Monthly Contribution</FormLabel>
       <CurrencyInput bind:value={monthlyContribution} min={0} />
     </div>
     <div>
-      <FormLabel>Monthly Withdrawals</FormLabel>
+      <FormLabel class="text-foreground">Monthly Withdrawals</FormLabel>
       <CurrencyInput bind:value={monthlyWithdrawal} min={0} />
       {#if monthlyWithdrawal > monthlyContribution}
         <p class="text-xs text-muted-foreground">The simulation may not complete</p>
       {/if}
     </div>
     <div>
-      <FormLabel>Total Months</FormLabel>
+      <FormLabel class="text-foreground">Total Months</FormLabel>
       <Input type="number" bind:value={totalMonths} min={2} />
     </div>
     <div>
-      <FormLabel>Interest Tiers</FormLabel>
+      <FormLabel class="text-foreground">Interest Tiers</FormLabel>
       <InterestTiers bind:value={interestTiers} />
     </div>
     <div>
-      <FormLabel>Bonus Rules</FormLabel>
+      <FormLabel class="text-foreground">Bonus Rules</FormLabel>
       <BonusRules bind:value={bonusInterest} />
     </div>
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
-    <h1 class="w-full text-2xl font-bold">Savings Projection</h1>
+    <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
     <Chart x="idx" y="startingBalance" data={data.result} errorRange={depletedMonth == null ? [] : [depletedMonth]} />
     {#if finalMonth != null}
-      <h3 class="w-full pt-4 text-2xl font-bold">
+      <h3 class="w-full pt-4 text-2xl font-bold text-foreground">
         Summary
         {#if depletedMonth != null}
           <span class="text-sm text-muted-foreground">
@@ -149,7 +149,7 @@
         {#each [{ title: "Final Balance", value: finalMonth.startingBalance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
           <div class="flex-1 space-y-2 rounded-lg border p-4">
             <h4 class="text-sm text-muted-foreground">{title}</h4>
-            <p class="text-3xl font-bold tracking-wide">{currencyFormatter.format(value)}</p>
+            <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
           </div>
         {/each}
       </div>
