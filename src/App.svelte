@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { InfoIcon } from "@lucide/svelte";
+
   import { FormLabel } from "$lib/components/shadcn/label";
 
   import Chart from "$lib/components/Chart.svelte";
@@ -136,15 +138,18 @@
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
     <Chart x="idx" y="startingBalance" data={data.result} errorRange={depletedMonth == null ? [] : [depletedMonth]} />
     {#if finalMonth != null}
-      <h3 class="w-full pt-4 text-2xl font-bold text-foreground">
-        Summary
+      <div class="flex w-full items-center justify-start gap-2 pt-4">
+        <h3 class="text-2xl font-bold text-foreground">Summary</h3>
         {#if depletedMonth != null}
-          <span class="text-sm text-muted-foreground">
-            (Account balance will be depleted after {depletedMonth.idx}
-            {depletedMonth.idx === 1 ? "month" : "months"})
+          <span
+            class="inline-flex items-center gap-2 rounded-full border border-muted-foreground bg-[#cc2936]/20 px-2 py-1 text-sm text-foreground"
+          >
+            <InfoIcon class="size-4" />
+            Account balance will be depleted after {depletedMonth.idx}
+            {depletedMonth.idx === 1 ? "month" : "months"}
           </span>
         {/if}
-      </h3>
+      </div>
       <div class="flex w-full flex-wrap gap-4">
         {#each [{ title: "Final Balance", value: finalMonth.startingBalance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
           <div class="flex-1 space-y-2 rounded-lg border p-4">

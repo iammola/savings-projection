@@ -21,7 +21,7 @@
   }
 </script>
 
-<div class="w-full flex-1 rounded-lg bg-linear-to-b from-[#3b6978] to-[#204051]">
+<div class="w-full flex-1 rounded-t-lg bg-linear-to-b from-[#3b6978] to-[#204051]">
   <Chart {data} {x} {y} yNice>
     <Layer type="svg">
       <Axis
