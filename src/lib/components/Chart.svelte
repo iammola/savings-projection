@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AnnotationLine, AnnotationRange, Area, Axis, Chart, Layer, LinearGradient } from "layerchart";
+  import { AnnotationLine, AnnotationRange, Area, Axis, Chart, Grid, Layer, LinearGradient } from "layerchart";
 
   interface Props {
     x: Extract<keyof MonthData, string>;
@@ -29,8 +29,16 @@
         tickSpacing={125}
         placement="bottom"
         tickLabelProps={{ dx: -10, verticalAnchor: "start" }}
-        grid={{ style: "stroke-dasharray: 1,3", class: "stroke-[#edffea]/20" }}
         format={formatMonthTick}
+      />
+      <Grid
+        x
+        style="stroke-dasharray:1,3"
+        class="stroke-[#edffea]/20"
+        xTicks={(scale) => {
+          const ticks = scale.ticks?.() ?? [];
+          return ticks.filter((tick) => tick !== ticks[0] && tick !== ticks[ticks.length - 1]);
+        }}
       />
       <LinearGradient class="from-[#edffea]/10 to-[#edffea]/50" vertical>
         {#snippet children({ gradient })}
