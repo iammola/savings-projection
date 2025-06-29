@@ -46,8 +46,8 @@
         {/snippet}
       </LinearGradient>
       {#each errorRange as range}
-        <AnnotationRange x={[range.idx, null]} class="fill-[#F86624]/30" />
-        <AnnotationLine x={range.idx} props={{ line: { class: "[stroke-dasharray:2,2] stroke-[#F86624]" } }} />
+        <AnnotationRange x={[range.idx, null]} class="fill-[#cc2936]/50" />
+        <AnnotationLine x={range.idx} props={{ line: { class: "[stroke-dasharray:2,2] stroke-[#cc2936]" } }} />
       {/each}
     </Layer>
   </Chart>
