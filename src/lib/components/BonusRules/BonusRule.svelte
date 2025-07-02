@@ -53,12 +53,19 @@
           {#if value.type === "IN_ACCOUNT_AGE"}
             <div class="col-span-full grid grid-cols-subgrid items-center">
               <FormLabel for="min">Age <span class="text-xs text-muted-foreground">(min)</span></FormLabel>
-              <Input id="min" class="h-8" type="number" max={value.data.maxMonth} bind:value={value.data.minMonth} />
+              <Input
+                id="min"
+                class="h-8"
+                type="number"
+                min={1}
+                max={value.data.maxMonth}
+                bind:value={value.data.minMonth}
+              />
               <span class="text-xs text-muted-foreground">months</span>
             </div>
             <div class="col-span-full grid grid-cols-subgrid items-center">
               <FormLabel for="max">Age <span class="text-xs text-muted-foreground">(max)</span></FormLabel>
-              <Input id="max" class="h-8" type="number" max={value.data.minMonth} bind:value={value.data.maxMonth} />
+              <Input id="max" class="h-8" type="number" min={value.data.minMonth} bind:value={value.data.maxMonth} />
               <span class="text-xs text-muted-foreground">months</span>
             </div>
           {:else if value.type === "MIN_CONTRIBUTION"}
