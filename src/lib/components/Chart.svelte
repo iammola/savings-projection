@@ -6,6 +6,7 @@
     y: Extract<keyof MonthData, string>;
     data: MonthData[];
     errorRange: Array<Pick<MonthData, "idx">>;
+    currencyFormatter: Intl.NumberFormat;
   }
 
   const { data, x, y, errorRange }: Props = $props();

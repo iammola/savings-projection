@@ -34,20 +34,19 @@
     const result: MonthData[] = [
       {
         idx: 0,
-        invested: initialBalance,
-        startingBalance: initialBalance,
-        interestEarnedInMonth: 0,
-        totalInterestEarned: 0,
+        endingBalance: initialBalance,
+        inMonth: { interest: 0, invested: initialBalance, rate: 0 },
+        total: { interest: 0, invested: initialBalance },
       },
     ];
     let previous = result[0];
 
     let completed = true;
-    const monthDiff = monthlyContribution - monthlyWithdrawal;
+    const monthInvested = monthlyContribution - monthlyWithdrawal;
 
     for (let monthIndex = 1; monthIndex <= totalMonths; monthIndex++) {
       const interestRate = [
-        interestTiers.findLast((tier) => tier.min < previous.startingBalance)?.rate ?? 0,
+        interestTiers.findLast((tier) => tier.min < previous.endingBalance)?.rate ?? 0,
         ...bonusInterest.flatMap((i) => {
           switch (i.type) {
             case "IN_ACCOUNT_AGE":
@@ -63,24 +62,29 @@
         }),
       ].reduce((acc, cur) => acc + cur / (12 * 100), 0);
 
-      const interestEarnedInMonth = previous.startingBalance * interestRate;
-      const totalInterestEarned = previous.totalInterestEarned + interestEarnedInMonth;
+      const monthInterest = previous.endingBalance * interestRate;
 
       // Removes whatever is left in account regardless of it being enough. So nothing else to build interest off
-      const invested = Math.max(0, previous.invested + monthDiff);
-      const startingBalance = Math.max(0, previous.startingBalance + interestEarnedInMonth + monthDiff);
+      const totalInterest = previous.total.interest + monthInterest;
+      const totalInvested = Math.max(0, previous.total.invested + monthInvested);
 
-      previous = { idx: monthIndex, invested, startingBalance, interestEarnedInMonth, totalInterestEarned };
+      const endingBalance = Math.max(0, previous.endingBalance + monthInterest + monthInvested);
+
+      previous = {
+        idx: monthIndex,
+        endingBalance: endingBalance,
+        inMonth: { interest: monthInterest, invested: monthInvested, rate: interestRate * 100 * 12 },
+        total: { interest: totalInterest, invested: totalInvested },
+      };
       result.push(previous);
 
-      if (startingBalance === 0) {
+      if (endingBalance === 0) {
         completed = false;
         result.push({
           idx: monthIndex + 2,
-          invested: 0,
-          startingBalance: 0,
-          interestEarnedInMonth: 0,
-          totalInterestEarned: previous.totalInterestEarned,
+          endingBalance: 0,
+          inMonth: { interest: 0, invested: previous.inMonth.invested, rate: 0 },
+          total: previous.total,
         });
 
         break;
@@ -126,7 +130,13 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
-    <Chart x="idx" y="startingBalance" data={data.result} errorRange={depletedMonth == null ? [] : [depletedMonth]} />
+    <Chart
+      {currencyFormatter}
+      x="idx"
+      y="endingBalance"
+      data={data.result}
+      errorRange={depletedMonth == null ? [] : [depletedMonth]}
+    />
     {#if finalMonth != null}
       <div class="flex w-full items-center justify-start gap-2 pt-4">
         <h3 class="text-2xl font-bold text-foreground">Summary</h3>
@@ -141,12 +151,20 @@
         {/if}
       </div>
       <div class="flex w-full flex-wrap gap-4">
-        {#each [{ title: "Final Balance", value: finalMonth.startingBalance }, { title: "Total Contributions", value: finalMonth.invested }, { title: "Total Interest Earned", value: finalMonth.totalInterestEarned }] as { title, value } (title)}
-          <div class="flex-1 space-y-2 rounded-lg border p-4">
-            <h4 class="text-sm text-muted-foreground">{title}</h4>
-            <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
-          </div>
-        {/each}
+        {#snippet children()}
+          {@const cards = [
+            { title: "Final Balance", value: finalMonth.endingBalance },
+            { title: "Total Contributions", value: finalMonth.total.invested },
+            { title: "Total Interest Earned", value: finalMonth.total.interest },
+          ]}
+          {#each cards as { title, value } (title)}
+            <div class="flex-1 space-y-2 rounded-lg border p-4">
+              <h4 class="text-sm text-muted-foreground">{title}</h4>
+              <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
+            </div>
+          {/each}
+        {/snippet}
+        {@render children()}
       </div>
     {/if}
   </main>
