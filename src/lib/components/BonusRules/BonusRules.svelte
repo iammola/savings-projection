@@ -43,7 +43,7 @@
     <BonusInterest bind:value={value[idx]} onDelete={() => deleteInterestItem(idx)} />
   {/each}
   {#if isAdding != null}
-    <BonusInterest isAdding bind:value={isAdding} />
+    <BonusInterest bind:value={isAdding} />
   {/if}
 </div>
 <Button variant="ghost" size="sm" class="mt-2" onclick={addInterestItem} disabled={isAdding != null}>

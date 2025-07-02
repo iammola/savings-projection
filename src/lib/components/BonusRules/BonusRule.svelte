@@ -13,7 +13,7 @@
 
   import type { BONUS_INTEREST_TYPE } from "./types";
 
-  const { isAdding = false, value = $bindable(), onDelete }: Props = $props();
+  const { value = $bindable(), onDelete }: Props = $props();
 
   const BONUS_INTEREST_TYPES: Record<BONUS_INTEREST_TYPE["type"], string> = {
     MIN_CONTRIBUTION: "Minimum Contribution",
@@ -22,9 +22,7 @@
 
   const displayLabel = $derived(value.type === "" ? undefined : BONUS_INTEREST_TYPES[value.type]);
 
-  type Props =
-    | { value: { type: "" }; isAdding: true; onDelete?: never }
-    | { value: BONUS_INTEREST_TYPE; isAdding?: false; onDelete: () => void };
+  type Props = { value: { type: "" }; onDelete?: never } | { value: BONUS_INTEREST_TYPE; onDelete: () => void };
 </script>
 
 <div class="flex items-center justify-start gap-2">
