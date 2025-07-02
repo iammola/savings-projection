@@ -11,11 +11,7 @@
 
   import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
 
-  const currencyFormatter = new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "CAD",
-    trailingZeroDisplay: "stripIfInteger",
-  });
+  const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
 
   let initialBalance = $state(2500);
   let monthlyWithdrawal = $state(0);
@@ -67,20 +63,14 @@
         }),
       ].reduce((acc, cur) => acc + cur / (12 * 100), 0);
 
-      const interestEarned = +(previous.startingBalance * interestRate).toFixed(2);
+      const interestEarnedInMonth = previous.startingBalance * interestRate;
+      const totalInterestEarned = previous.totalInterestEarned + interestEarnedInMonth;
 
       // Removes whatever is left in account regardless of it being enough. So nothing else to build interest off
       const invested = Math.max(0, previous.invested + monthDiff);
-      const startingBalance = Math.max(0, previous.startingBalance + interestEarned + monthDiff);
+      const startingBalance = Math.max(0, previous.startingBalance + interestEarnedInMonth + monthDiff);
 
-      previous = {
-        idx: monthIndex,
-        invested,
-        startingBalance,
-        interestEarnedInMonth: interestEarned,
-        totalInterestEarned: previous.totalInterestEarned + interestEarned,
-      };
-
+      previous = { idx: monthIndex, invested, startingBalance, interestEarnedInMonth, totalInterestEarned };
       result.push(previous);
 
       if (startingBalance === 0) {
