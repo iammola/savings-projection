@@ -32,9 +32,7 @@
         format={formatMonthTick}
       />
       <Grid
-        x
-        style="stroke-dasharray:1,3"
-        class="stroke-[#edffea]/20"
+        x={{ class: "stroke-[#edffea]/20 [stroke-dasharray:1,3]" }}
         xTicks={(scale) => {
           const ticks = scale.ticks?.() ?? [];
           return ticks.filter((tick) => tick !== ticks[0] && tick !== ticks[ticks.length - 1]);
