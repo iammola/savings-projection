@@ -36,7 +36,11 @@
     if (typeof v !== "number" || !Number.isInteger(v) || v === 0) return "";
     return timeFormatter
       .formatToParts(monthsToDuration(v))
-      .reduce((acc: string, cur: { value: string }) => acc + (cur.value.trim() === "," ? "\n" : cur.value), "");
+      .reduce(
+        (acc: string, cur: { value: string; type: "group" | "literal" }) =>
+          acc + (cur.type === "literal" && cur.value.trim() === "," ? "\n" : cur.value),
+        "",
+      );
   }
 </script>
 
