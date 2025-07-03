@@ -130,7 +130,9 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
-    <Chart {currencyFormatter} months={data.result} errorRange={depletedMonth} />
+    <div class="w-full flex-1">
+      <Chart {currencyFormatter} months={data.result} errorRange={depletedMonth} />
+    </div>
     {#if finalMonth != null}
       <div class="flex w-full items-center justify-start gap-2 pt-4">
         <h3 class="text-2xl font-bold text-foreground">Summary</h3>
