@@ -34,6 +34,7 @@
     const result: MonthData[] = [
       {
         idx: 0,
+        startingBalance: 0,
         endingBalance: initialBalance,
         inMonth: { interest: 0, invested: initialBalance, rate: 0 },
         total: { interest: 0, invested: initialBalance },
@@ -72,7 +73,8 @@
 
       previous = {
         idx: monthIndex,
-        endingBalance: endingBalance,
+        startingBalance: previous.endingBalance,
+        endingBalance,
         inMonth: { interest: monthInterest, invested: monthInvested, rate: interestRate * 100 * 12 },
         total: { interest: totalInterest, invested: totalInvested },
       };
@@ -81,7 +83,8 @@
       if (endingBalance === 0) {
         completed = false;
         result.push({
-          idx: monthIndex + 2,
+          idx: monthIndex + 1,
+          startingBalance: 0,
           endingBalance: 0,
           inMonth: { interest: 0, invested: previous.inMonth.invested, rate: 0 },
           total: previous.total,
@@ -134,18 +137,7 @@
       <Chart {currencyFormatter} months={data.result} errorRange={depletedMonth} />
     </div>
     {#if finalMonth != null}
-      <div class="flex w-full items-center justify-start gap-2 pt-4">
-        <h3 class="text-2xl font-bold text-foreground">Summary</h3>
-        {#if depletedMonth != null}
-          <span
-            class="inline-flex items-center gap-2 rounded-full border border-muted-foreground bg-[#cc2936]/20 px-2 py-1 text-sm text-foreground"
-          >
-            <InfoIcon class="size-4" />
-            Account balance will be depleted after {depletedMonth.idx}
-            {depletedMonth.idx === 1 ? "month" : "months"}
-          </span>
-        {/if}
-      </div>
+      <h3 class="w-full pt-4 text-2xl font-bold text-foreground">Summary</h3>
       <div class="flex w-full flex-wrap gap-4">
         {#snippet children()}
           {@const cards = [
