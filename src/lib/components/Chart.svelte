@@ -16,14 +16,14 @@
 
   import { cn } from "$lib/utils";
   import { Separator } from "$lib/components/shadcn/separator";
+  import { currencyFormatter, percentFormatter, timeFormatter } from "$lib/shared";
 
   interface Props {
     months: MonthData[];
     errorRange: Pick<MonthData, "idx"> | undefined;
-    currencyFormatter: Intl.NumberFormat;
   }
 
-  const { currencyFormatter, months, errorRange }: Props = $props();
+  const { months, errorRange }: Props = $props();
 
   const CHART_ROUNDED = 8; // theme(radius.lg)
 
@@ -32,8 +32,6 @@
     balance: { key: "balance", value: (d) => d.total.interest, label: "Total Balance", color: "#FFBE00" },
   } satisfies Record<string, SeriesData<MonthData, Component<AreaProps>>>;
 
-  // @ts-expect-error Intl.DurationFormat (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat) not typed
-  const timeFormatter = new Intl.DurationFormat(undefined, { style: "long" });
   const monthsToDuration = (months: number) => ({ years: Math.trunc(months / 12), months: months % 12 });
 
   function formatMonthTick(v: unknown) {
@@ -82,9 +80,9 @@
           {@const isDepleted = errorRange != null && data.idx >= errorRange.idx}
           {@const netChange = data.endingBalance - data.startingBalance}
           {@const growthRate =
-            (data.endingBalance === 0 ? 0
+            data.endingBalance === 0 ? 0
             : data.startingBalance === 0 ? 1
-            : netChange / data.startingBalance) * 100}
+            : netChange / data.startingBalance}
           <div
             class={cn("w-md space-y-3 rounded-lg bg-background/80 p-3 text-foreground shadow", {
               "border border-red-700 bg-red-100/80": isDepleted,
@@ -114,7 +112,7 @@
                 {:else if netChange < 0}
                   <TrendingDownIcon />
                 {/if}
-                {growthRate.toFixed(2)}%
+                {percentFormatter.format(growthRate)}
               </span>
             </div>
             <Separator class={cn({ "bg-red-700": isDepleted })} />
@@ -125,7 +123,7 @@
                 </div>
                 <span class="text-sm font-medium text-muted-foreground">{series.balance.label}</span>
                 <span class="text-right text-xs">
-                  {currencyFormatter.format(data.endingBalance)} @ {data.inMonth.rate.toFixed(2)}%
+                  {currencyFormatter.format(data.endingBalance)} @ {percentFormatter.format(data.inMonth.rate)}
                 </span>
               </div>
               <div class="col-span-full grid grid-cols-subgrid items-center">

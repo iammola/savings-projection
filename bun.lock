@@ -6,6 +6,7 @@
       "dependencies": {
         "clsx": "^2.1.1",
         "layerchart": "2.0.0-next.27",
+        "locale-currency": "^0.0.4",
       },
       "devDependencies": {
         "@internationalized/date": "^3.8.2",
@@ -327,6 +328,8 @@
     "lightningcss-win32-arm64-msvc": ["lightningcss-win32-arm64-msvc@1.30.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-mSL4rqPi4iXq5YVqzSsJgMVFENoa4nGTT/GjO2c0Yl9OuQfPsIfncvLrEW6RbbB24WtZ3xP/2CCmI3tNkNV4oA=="],
 
     "lightningcss-win32-x64-msvc": ["lightningcss-win32-x64-msvc@1.30.1", "", { "os": "win32", "cpu": "x64" }, "sha512-PVqXh48wh4T53F/1CCu8PIPCxLzWyCnn/9T5W1Jpmdy5h9Cwd+0YQS6/LwhHXSafuc61/xg9Lv5OrCby6a++jg=="],
+
+    "locale-currency": ["locale-currency@0.0.4", "", {}, "sha512-S3pRVxU7xZDFlN4DkvLChQf8e1xm39XD6gkiWk1GI7nP3P7VMXHTWD/ZLLr13rAKNRpAeNCgTTMMNxEG8GZYRQ=="],
 
     "locate-character": ["locate-character@3.0.0", "", {}, "sha512-SW13ws7BjaeJ6p7Q6CO2nchbYEc3X3J6WrmTTDto7yMPqVSZTUyY5Tjbid+Ab8gLnATtygYtiDIJGQRRn2ZOiA=="],
 

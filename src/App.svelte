@@ -1,17 +1,15 @@
 <script lang="ts">
-  import { InfoIcon } from "@lucide/svelte";
-
+  import { Input } from "$lib/components/shadcn/input";
   import { FormLabel } from "$lib/components/shadcn/label";
 
   import Chart from "$lib/components/Chart.svelte";
-  import { Input } from "$lib/components/shadcn/input";
   import CurrencyInput from "$lib/components/CurrencyInput.svelte";
   import InterestTiers from "$lib/components/InterestTiers.svelte";
   import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
 
-  import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
+  import { currencyFormatter } from "$lib/shared";
 
-  const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "CAD" });
+  import type { BONUS_INTEREST_TYPE } from "$lib/components/BonusRules/types";
 
   let initialBalance = $state(2500);
   let monthlyWithdrawal = $state(0);
@@ -75,7 +73,7 @@
         idx: monthIndex,
         startingBalance: previous.endingBalance,
         endingBalance,
-        inMonth: { interest: monthInterest, invested: monthInvested, rate: interestRate * 100 * 12 },
+        inMonth: { interest: monthInterest, invested: monthInvested, rate: interestRate * 12 },
         total: { interest: totalInterest, invested: totalInvested },
       };
       result.push(previous);
@@ -144,7 +142,7 @@
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
     <div class="w-full flex-1 bg-secondary/50">
-      <Chart {currencyFormatter} months={data.result} errorRange={depletedMonth} />
+      <Chart months={data.result} errorRange={depletedMonth} />
     </div>
     {#if finalMonth != null}
       <h3 class="w-full pt-4 text-2xl font-bold text-foreground">Summary</h3>
