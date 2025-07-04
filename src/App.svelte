@@ -99,6 +99,16 @@
 
   const finalMonth = $derived(data.result.at(-1));
   const depletedMonth = $derived(data.completed ? undefined : data.result.at(-2));
+
+  $effect(() => {
+    const cb = (e: MediaQueryList | MediaQueryListEvent) =>
+      e.matches ? document.body.classList.add("dark") : document.body.classList.remove("dark");
+    const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
+
+    cb(darkModePreference);
+    darkModePreference.addEventListener("change", cb);
+    return () => darkModePreference.removeEventListener("change", cb);
+  });
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 bg-background p-8 *:min-h-0">
