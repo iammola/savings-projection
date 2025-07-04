@@ -112,7 +112,7 @@
 </script>
 
 <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 bg-background p-8 *:min-h-0">
-  <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-secondary p-3">
+  <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-secondary/50 p-3">
     <div>
       <FormLabel class="text-foreground">Initial Balance</FormLabel>
       <CurrencyInput bind:value={initialBalance} min={0} />
@@ -143,7 +143,7 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
-    <div class="w-full flex-1">
+    <div class="w-full flex-1 bg-secondary/50">
       <Chart {currencyFormatter} months={data.result} errorRange={depletedMonth} />
     </div>
     {#if finalMonth != null}
@@ -156,7 +156,7 @@
             { title: "Total Interest Earned", value: finalMonth.total.interest },
           ]}
           {#each cards as { title, value } (title)}
-            <div class="flex-1 space-y-2 rounded-lg border p-4">
+            <div class="flex-1 space-y-2 rounded-lg border bg-secondary/50 p-4">
               <h4 class="text-sm text-muted-foreground">{title}</h4>
               <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
             </div>

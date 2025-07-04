@@ -2,9 +2,11 @@
   import {
     AnnotationLine,
     AnnotationRange,
+    Area,
     AreaChart,
     Axis,
     Grid,
+    RectClipPath,
     Tooltip,
     type AreaProps,
     type SeriesData,
@@ -22,6 +24,8 @@
   }
 
   const { currencyFormatter, months, errorRange }: Props = $props();
+
+  const CHART_ROUNDED = 8; // theme(radius.lg)
 
   const series = {
     invested: { key: "invested", value: (d) => d.total.invested, label: "Total Invested", color: "#00B5FF" },
@@ -44,7 +48,7 @@
   }
 </script>
 
-<div class="size-full rounded-lg">
+<div class="size-full" style:border-radius={`${CHART_ROUNDED}px`}>
   <AreaChart x="idx" padding={0} rule={false} data={months} seriesLayout="stack" series={Object.values(series)}>
     {#snippet axis()}
       <Axis tickMarks={false} tickSpacing={100} placement="bottom" format={formatMonthTick} />
@@ -59,6 +63,13 @@
           );
         }}
       />
+    {/snippet}
+    {#snippet marks({ series, getAreaProps, context })}
+      <RectClipPath width={context.width} height={context.height} rx={CHART_ROUNDED} ry={CHART_ROUNDED}>
+        {#each series as s, i (s.key)}
+          <Area {...getAreaProps(s, i)} />
+        {/each}
+      </RectClipPath>
     {/snippet}
     {#snippet aboveMarks()}
       {#if errorRange != null}
