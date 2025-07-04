@@ -2,7 +2,7 @@
   import { Input } from "$lib/components/shadcn/input";
   import { FormLabel } from "$lib/components/shadcn/label";
 
-  import Chart from "$lib/components/Chart.svelte";
+  import Chart from "./Chart.svelte";
   import CurrencyInput from "$lib/components/CurrencyInput.svelte";
   import InterestTiers from "$lib/components/InterestTiers.svelte";
   import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
@@ -141,7 +141,7 @@
   </aside>
   <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
     <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
-    <div class="w-full flex-1 bg-secondary/50">
+    <div class="w-full flex-1 *:bg-secondary/50">
       <Chart months={data.result} errorRange={depletedMonth} />
     </div>
     {#if finalMonth != null}
