@@ -11,8 +11,6 @@
   import PercentInput from "$lib/components/PercentInput.svelte";
   import CurrencyInput from "$lib/components/CurrencyInput.svelte";
 
-  import type { BONUS_INTEREST_TYPE } from "./types";
-
   const { value = $bindable(), onDelete }: Props = $props();
 
   const BONUS_INTEREST_TYPES: Record<BONUS_INTEREST_TYPE["type"], string> = {
