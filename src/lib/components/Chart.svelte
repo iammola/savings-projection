@@ -57,10 +57,8 @@
       <Grid
         x={{ class: "stroke-foreground/20 [stroke-dasharray:1,3]" }}
         xTicks={(scale) => {
-          const ticks = scale.ticks?.() ?? [];
-          return ticks.filter(
-            (tick) => Number.isInteger(tick) && tick !== ticks[0] && tick !== ticks[ticks.length - 1],
-          );
+          const domain = scale.domain();
+          return scale.ticks?.().filter((tick) => Number.isInteger(tick) && !domain.includes(tick));
         }}
       />
     {/snippet}
