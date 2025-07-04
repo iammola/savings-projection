@@ -54,7 +54,9 @@
         x={{ class: "stroke-foreground/20 [stroke-dasharray:1,3]" }}
         xTicks={(scale) => {
           const ticks = scale.ticks?.() ?? [];
-          return ticks.filter((tick) => tick !== ticks[0] && tick !== ticks[ticks.length - 1]);
+          return ticks.filter(
+            (tick) => Number.isInteger(tick) && tick !== ticks[0] && tick !== ticks[ticks.length - 1],
+          );
         }}
       />
     {/snippet}
