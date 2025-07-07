@@ -17,7 +17,7 @@
 
   let { value = $bindable(), class: className, ...rest }: Props = $props();
 
-  const currency = $derived(currencyFormatter.formatToParts(0).find((part) => part.type === "currency"));
+  const symbol = $derived(currencyFormatter.formatToParts(0).find((part) => part.type === "currency")?.value);
 
   const formatted = $derived(formatValue(value));
 
@@ -39,7 +39,7 @@
   };
 
   function formatValue(value: number) {
-    return currencyFormatter.format(value).replace(currency?.value!, "");
+    return currencyFormatter.format(value).replace(symbol!, "");
   }
 
   function stepper(action: "INC" | "DEC") {
@@ -61,7 +61,7 @@
   <span
     class="flex shrink-0 items-center py-(--padding-y) pl-(--padding-x) leading-none text-muted-foreground select-none"
   >
-    {currency?.value}
+    {symbol}
   </span>
   {#key formatted}
     <input

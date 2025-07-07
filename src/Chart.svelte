@@ -74,7 +74,7 @@
       {/if}
     {/snippet}
     {#snippet tooltip({ context })}
-      <Tooltip.Root variant="none" anchor="bottom-left">
+      <Tooltip.Root variant="none" anchor="bottom-left" contained="window">
         {#snippet children()}
           {@const data = context.tooltip.data!}
           {@const isDepleted = errorRange != null && data.idx >= errorRange.idx}
