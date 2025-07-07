@@ -126,9 +126,11 @@
       <main class="flex h-full flex-col items-center justify-center-safe gap-4 *:min-h-0 *:w-full">
         <div class="flex w-full items-center justify-start gap-4">
           <h1 class="text-2xl font-bold text-foreground">Savings Projection</h1>
-          <Drawer.Trigger class={buttonVariants({ size: "sm", variant: "secondary" })}>
-            <CogIcon /> Configure
-          </Drawer.Trigger>
+          {#if !isDesktop.current}
+            <Drawer.Trigger class={buttonVariants({ size: "sm", variant: "secondary" })}>
+              <CogIcon /> Configure
+            </Drawer.Trigger>
+          {/if}
         </div>
         <div class="flex-1 *:bg-secondary/50">
           <Chart months={data.result} errorRange={depletedMonth} />
