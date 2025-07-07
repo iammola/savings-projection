@@ -1,15 +1,15 @@
 <script lang="ts">
+  import { CogIcon } from "@lucide/svelte";
   import { MediaQuery } from "svelte/reactivity";
 
-  import { Input } from "$lib/components/shadcn/input";
-  import { FormLabel } from "$lib/components/shadcn/label";
+  import { cn } from "$lib/utils";
+  import { currencyFormatter } from "$lib/shared";
+
+  import * as Drawer from "$lib/components/shadcn/drawer";
+  import { buttonVariants } from "$lib/components/shadcn/button";
 
   import Chart from "./Chart.svelte";
-  import CurrencyInput from "$lib/components/CurrencyInput.svelte";
-  import InterestTiers from "$lib/components/InterestTiers.svelte";
-  import BonusRules from "$lib/components/BonusRules/BonusRules.svelte";
-
-  import { currencyFormatter } from "$lib/shared";
+  import Config from "./Config.svelte";
 
   const chartConfigs = $state<ChartConfig[]>([
     {
@@ -98,6 +98,7 @@
     });
   });
 
+  const isDesktop = new MediaQuery("(min-width: 1024px)");
   const isDarkMode = new MediaQuery("(prefers-color-scheme: dark)");
 
   $effect(() => {
@@ -107,63 +108,51 @@
 </script>
 
 {#each chartData as data, i}
-  {@const config = chartConfigs[i]}
   {@const finalMonth = data.result.at(-1)}
   {@const depletedMonth = data.completed ? undefined : data.result.at(-2)}
-  <div class="grid h-screen w-screen grid-cols-[25%_minmax(0,1fr)] gap-8 bg-background p-8 *:min-h-0">
-    <aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-secondary/50 p-3">
-      <div>
-        <FormLabel class="text-foreground">Initial Balance</FormLabel>
-        <CurrencyInput bind:value={config.initialBalance} min={0} />
-      </div>
-      <div>
-        <FormLabel class="text-foreground">Monthly Contribution</FormLabel>
-        <CurrencyInput bind:value={config.contribution} min={0} />
-      </div>
-      <div>
-        <FormLabel class="text-foreground">Monthly Withdrawals</FormLabel>
-        <CurrencyInput bind:value={config.withdrawals} min={0} />
-        {#if config.withdrawals > config.contribution}
-          <p class="text-xs text-muted-foreground">The simulation may not complete</p>
-        {/if}
-      </div>
-      <div>
-        <FormLabel class="text-foreground">Total Months</FormLabel>
-        <Input type="number" bind:value={config.period} min={2} />
-      </div>
-      <div>
-        <FormLabel class="text-foreground">Interest Tiers</FormLabel>
-        <InterestTiers bind:value={config.tiers} />
-      </div>
-      <div>
-        <FormLabel class="text-foreground">Bonus Rules</FormLabel>
-        <BonusRules bind:value={config.bonuses} />
-      </div>
-    </aside>
-    <main class="flex flex-col items-center justify-center-safe gap-4 *:min-h-0">
-      <h1 class="w-full text-2xl font-bold text-foreground">Savings Projection</h1>
-      <div class="w-full flex-1 *:bg-secondary/50">
-        <Chart months={data.result} errorRange={depletedMonth} />
-      </div>
-      {#if finalMonth != null}
-        <h3 class="w-full pt-4 text-2xl font-bold text-foreground">Summary</h3>
-        <div class="flex w-full flex-wrap gap-4">
-          {#snippet children()}
-            {@const cards = [
-              { title: "Final Balance", value: finalMonth.endingBalance },
-              { title: "Total Contributions", value: finalMonth.total.invested },
-              { title: "Total Interest Earned", value: finalMonth.total.interest },
-            ]}
-            {#each cards as { title, value } (title)}
-              <div class="flex-1 space-y-2 rounded-lg border bg-secondary/50 p-4">
-                <h4 class="text-sm text-muted-foreground">{title}</h4>
-                <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
-              </div>
-            {/each}
-          {/snippet}
-          {@render children()}
-        </div>
+  <Drawer.Root direction="left">
+    <div
+      class={cn("h-screen w-screen bg-background p-5 *:min-h-0", {
+        "grid grid-cols-[minmax(max-content,30%)_minmax(0,1fr)] gap-8 p-8": isDesktop.current,
+      })}
+    >
+      {#if isDesktop.current}
+        <Config bind:config={chartConfigs[i]} />
+      {:else}
+        <Drawer.Content>
+          <Config bind:config={chartConfigs[i]} />
+        </Drawer.Content>
       {/if}
-    </main>
-  </div>
+      <main class="flex h-full flex-col items-center justify-center-safe gap-4 *:min-h-0 *:w-full">
+        <div class="flex w-full items-center justify-start gap-4">
+          <h1 class="text-2xl font-bold text-foreground">Savings Projection</h1>
+          <Drawer.Trigger class={buttonVariants({ size: "sm", variant: "secondary" })}>
+            <CogIcon /> Configure
+          </Drawer.Trigger>
+        </div>
+        <div class="flex-1 *:bg-secondary/50">
+          <Chart months={data.result} errorRange={depletedMonth} />
+        </div>
+        {#if finalMonth != null}
+          <h3 class="pt-4 text-2xl font-bold text-foreground">Summary</h3>
+          <div class="flex flex-wrap gap-4">
+            {#snippet children()}
+              {@const cards = [
+                { title: "Final Balance", value: finalMonth.endingBalance },
+                { title: "Total Contributions", value: finalMonth.total.invested },
+                { title: "Total Interest Earned", value: finalMonth.total.interest },
+              ]}
+              {#each cards as { title, value } (title)}
+                <div class="flex-1 space-y-2 rounded-lg border bg-secondary/50 p-4">
+                  <h4 class="text-sm text-muted-foreground">{title}</h4>
+                  <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
+                </div>
+              {/each}
+            {/snippet}
+            {@render children()}
+          </div>
+        {/if}
+      </main>
+    </div>
+  </Drawer.Root>
 {/each}
