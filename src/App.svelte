@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { MediaQuery } from "svelte/reactivity";
+
   import { Input } from "$lib/components/shadcn/input";
   import { FormLabel } from "$lib/components/shadcn/label";
 
@@ -96,14 +98,11 @@
     });
   });
 
-  $effect(() => {
-    const cb = (e: MediaQueryList | MediaQueryListEvent) =>
-      e.matches ? document.body.classList.add("dark") : document.body.classList.remove("dark");
-    const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
+  const isDarkMode = new MediaQuery("(prefers-color-scheme: dark)");
 
-    cb(darkModePreference);
-    darkModePreference.addEventListener("change", cb);
-    return () => darkModePreference.removeEventListener("change", cb);
+  $effect(() => {
+    if (isDarkMode.current) document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
   });
 </script>
 
