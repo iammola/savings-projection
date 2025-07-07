@@ -48,8 +48,6 @@
 }
 
 @theme inline {
-  --container-2xl: 1400px;
-
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -90,16 +88,9 @@
 
 @layer base {
   * {
-    @apply border-border font-[Compagnon,_theme(font.sans)] tabular-nums;
+    @apply border-border tabular-nums;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@font-face {
-  font-family: "Compagnon";
-  src: url("./fonts/Compagnon-Roman.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
 }
