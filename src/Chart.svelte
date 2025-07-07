@@ -74,7 +74,7 @@
       {/if}
     {/snippet}
     {#snippet tooltip({ context })}
-      <Tooltip.Root variant="none" anchor="bottom-left" contained="window">
+      <Tooltip.Root variant="none" anchor="top" contained="window">
         {#snippet children()}
           {@const data = context.tooltip.data!}
           {@const isDepleted = errorRange != null && data.idx >= errorRange.idx}
@@ -84,7 +84,7 @@
             : data.startingBalance === 0 ? 1
             : netChange / data.startingBalance}
           <div
-            class={cn("w-md space-y-3 rounded-lg bg-background/80 p-3 text-foreground shadow", {
+            class={cn("w-max max-w-sm min-w-xs space-y-3 rounded-lg bg-background/80 p-3 text-foreground shadow", {
               "border border-red-700 bg-red-100/80": isDepleted,
             })}
           >
@@ -121,7 +121,7 @@
                 <div class="grid place-items-center">
                   <div style:background-color={series.balance.color} class="size-3 rounded-full"></div>
                 </div>
-                <span class="text-sm font-medium text-muted-foreground">{series.balance.label}</span>
+                <span class="min-w-max text-sm font-medium text-muted-foreground">{series.balance.label}</span>
                 <span class="text-right text-xs">
                   {currencyFormatter.format(data.endingBalance)} @ {percentFormatter.format(data.inMonth.rate)}
                 </span>
@@ -130,7 +130,7 @@
                 <div class="grid place-items-center">
                   <div style:background-color={series.invested.color} class="size-3 rounded-full"></div>
                 </div>
-                <span class="text-sm font-medium text-muted-foreground">{series.invested.label}</span>
+                <span class="min-w-max text-sm font-medium text-muted-foreground">{series.invested.label}</span>
                 <span class="text-right text-xs">
                   {currencyFormatter.format(data.total.invested)}
                 </span>
@@ -139,7 +139,7 @@
                 <div class="grid place-items-center">
                   <PercentIcon class="size-4 text-green-600" />
                 </div>
-                <span class="text-sm font-medium text-muted-foreground">Total Interest Earned</span>
+                <span class="min-w-max text-sm font-medium text-muted-foreground">Total Interest Earned</span>
                 <span class={cn("text-right text-xs", { "text-green-600": data.total.interest > 0 })}>
                   {data.total.interest > 0 ? "+" : ""}{currencyFormatter.format(data.total.interest)}
                 </span>
