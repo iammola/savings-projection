@@ -9,7 +9,7 @@
   let { config = $bindable() }: { config: ChartConfig } = $props();
 </script>
 
-<aside class="flex flex-col gap-4 overflow-y-auto rounded-lg bg-secondary/50 p-3">
+<aside class="flex flex-col gap-4 overflow-y-auto rounded-lg h-full bg-secondary/50 p-3">
   <div>
     <FormLabel class="text-foreground">Initial Balance</FormLabel>
     <CurrencyInput bind:value={config.initialBalance} min={0} />
@@ -27,7 +27,7 @@
   </div>
   <div>
     <FormLabel class="text-foreground">Total Months</FormLabel>
-    <Input type="number" bind:value={config.period} min={2} />
+    <Input type="number" inputmode="numeric" bind:value={config.period} min={2} />
   </div>
   <div>
     <FormLabel class="text-foreground">Interest Tiers</FormLabel>

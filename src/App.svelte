@@ -33,6 +33,8 @@
 
   const chartData = $derived.by(() => {
     return chartConfigs.map(({ initialBalance, period, withdrawals, contribution, tiers, bonuses }) => {
+      period = Math.max(2, period);
+
       let previous: MonthData = {
         idx: 0,
         startingBalance: 0,
@@ -112,14 +114,14 @@
   {@const depletedMonth = data.completed ? undefined : data.result.at(-2)}
   <Drawer.Root direction="left">
     <div
-      class={cn("h-screen w-screen bg-background p-5 *:min-h-0", {
-        "grid grid-cols-[minmax(max-content,30%)_minmax(0,1fr)] gap-8 p-8": isDesktop.current,
+      class={cn("h-dvh w-dvw bg-background p-5 *:min-h-0", {
+        "grid grid-cols-[minmax(max-content,25%)_minmax(0,1fr)] gap-8 p-8": isDesktop.current,
       })}
     >
       {#if isDesktop.current}
         <Config bind:config={chartConfigs[i]} />
       {:else}
-        <Drawer.Content>
+        <Drawer.Content class="!w-max max-w-[calc(100%-3rem)]">
           <Config bind:config={chartConfigs[i]} />
         </Drawer.Content>
       {/if}
@@ -137,7 +139,7 @@
         </div>
         {#if finalMonth != null}
           <h3 class="pt-4 text-2xl font-bold text-foreground">Summary</h3>
-          <div class="flex flex-wrap gap-4">
+          <div class="flex flex-col flex-wrap gap-2 lg:flex-row lg:gap-4">
             {#snippet children()}
               {@const cards = [
                 { title: "Final Balance", value: finalMonth.endingBalance },
@@ -145,9 +147,13 @@
                 { title: "Total Interest Earned", value: finalMonth.total.interest },
               ]}
               {#each cards as { title, value } (title)}
-                <div class="flex-1 space-y-2 rounded-lg border bg-secondary/50 p-4">
-                  <h4 class="text-sm text-muted-foreground">{title}</h4>
-                  <p class="text-3xl font-bold tracking-wide text-foreground">{currencyFormatter.format(value)}</p>
+                <div
+                  class="flex flex-1 items-center justify-between gap-x-4 gap-y-2 rounded-lg border bg-secondary/50 p-2 lg:flex-col lg:items-start lg:p-4"
+                >
+                  <h4 class="min-w-max text-sm text-muted-foreground">{title}</h4>
+                  <p class="text-lg font-bold tracking-wide text-foreground lg:text-3xl">
+                    {currencyFormatter.format(value)}
+                  </p>
                 </div>
               {/each}
             {/snippet}

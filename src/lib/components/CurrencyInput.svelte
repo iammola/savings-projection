@@ -66,6 +66,7 @@
   {#key formatted}
     <input
       type="text"
+      inputmode="decimal"
       class="flex field-sizing-content grow [appearance:textfield] py-(--padding-y) pr-(--padding-x) text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
       defaultValue={formatted}
       placeholder={formatValue(0)}

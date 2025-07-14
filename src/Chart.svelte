@@ -84,9 +84,10 @@
             : data.startingBalance === 0 ? 1
             : netChange / data.startingBalance}
           <div
-            class={cn("w-max max-w-sm min-w-xs space-y-3 rounded-lg bg-background/80 p-3 text-foreground shadow", {
-              "border border-red-700 bg-red-100/80": isDepleted,
-            })}
+            class={cn(
+              "w-max max-w-sm min-w-xs space-y-3 rounded-lg bg-background/80 p-3 text-foreground shadow backdrop-blur-xs",
+              { "border border-red-700 bg-red-100/80": isDepleted },
+            )}
           >
             {#if isDepleted}
               <p class="flex gap-2 rounded-md bg-red-200/75 p-2 text-xs font-medium text-red-700">
