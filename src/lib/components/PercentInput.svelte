@@ -123,7 +123,7 @@
 <div
   onpointerdown={handlePointerDown}
   class={cn(
-    "flex h-10 min-w-0 items-center justify-end gap-2 rounded-md border border-input bg-background px-3 py-2 ring-offset-background select-none *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+    "flex min-w-0 items-center justify-end gap-2 rounded-md border border-input bg-background px-3 py-1 ring-offset-background select-none *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
     className,
     "cursor-ew-resize",
   )}
@@ -131,7 +131,7 @@
   <input
     type="number"
     inputmode="decimal"
-    class="flex field-sizing-content [appearance:textfield] text-base text-foreground placeholder:text-muted-foreground hover:cursor-ew-resize focus-visible:outline-hidden active:cursor-none active:caret-transparent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+    class="flex field-sizing-content [appearance:textfield] text-sm text-foreground placeholder:text-muted-foreground hover:cursor-ew-resize focus-visible:outline-hidden active:cursor-none active:caret-transparent disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
     {step}
     value={value.toFixed(decimals)}
     onchange={handleInputChange}

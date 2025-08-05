@@ -93,4 +93,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  #app {
+    @apply flex h-dvh w-dvw flex-col flex-nowrap items-stretch justify-start p-5;
+  }
 }

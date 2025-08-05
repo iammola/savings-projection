@@ -7,11 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "format": "prettier -wc ."
   },
   "devDependencies": {
     "@internationalized/date": "^3.8.2",
-    "@lucide/svelte": "^0.525.0",
+    "@lucide/svelte": "^0.515.0",
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tailwindcss/vite": "^4.1.11",
     "@tsconfig/svelte": "^5.0.4",

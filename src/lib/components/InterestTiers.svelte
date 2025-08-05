@@ -53,7 +53,7 @@
               class={buttonVariants({
                 variant: "ghost",
                 size: "icon",
-                class: "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+                class: "h-[unset] w-[unset] p-2 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
               })}
             >
               <XIcon />
@@ -74,7 +74,9 @@
       </div>
     {/each}
   </div>
-  <Button variant="ghost" size="sm" class="mt-2" onclick={() => addTier()}>
-    <PlusIcon /> Add Tier
-  </Button>
+  <div class="flex justify-end">
+    <Button variant="ghost" size="sm" onclick={() => addTier()}>
+      <PlusIcon /> Add Tier
+    </Button>
+  </div>
 </Tooltip.Provider>

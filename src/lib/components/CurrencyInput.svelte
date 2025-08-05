@@ -54,12 +54,12 @@
 
 <div
   class={cn(
-    "flex h-10 min-w-0 items-center justify-start gap-2 overflow-hidden rounded-md border border-input bg-background ring-offset-background select-none [--padding-x:theme(spacing.3)] [--padding-y:theme(spacing.2)] *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+    "flex min-w-0 items-center justify-start gap-2 overflow-hidden rounded-md border border-input bg-background ring-offset-background select-none [--padding-x:theme(spacing.3)] [--padding-y:theme(spacing.1)] *:min-w-0 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
     className,
   )}
 >
   <span
-    class="flex shrink-0 items-center py-(--padding-y) pl-(--padding-x) leading-none text-muted-foreground select-none"
+    class="flex shrink-0 items-center py-(--padding-y) pl-(--padding-x) text-sm leading-none text-muted-foreground select-none"
   >
     {symbol}
   </span>
@@ -67,7 +67,7 @@
     <input
       type="text"
       inputmode="decimal"
-      class="flex field-sizing-content grow [appearance:textfield] py-(--padding-y) pr-(--padding-x) text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+      class="flex field-sizing-content grow [appearance:textfield] py-(--padding-y) pr-(--padding-x) text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
       defaultValue={formatted}
       placeholder={formatValue(0)}
       onkeydown={onKeyDown}
