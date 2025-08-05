@@ -1,9 +1,10 @@
+*.env
+
 # Logs
 *.log
 
 app/node_modules
 app/dist
-*.local
 
 # Editor directories and files
 .vscode/*
