@@ -1,8 +1,8 @@
 # Logs
 *.log
 
-node_modules
-dist
+app/node_modules
+app/dist
 *.local
 
 # Editor directories and files
