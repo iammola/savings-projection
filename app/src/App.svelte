@@ -155,7 +155,9 @@
   $effect(() => {
     fetch("/api/extract", {
       method: "POST",
-      body: JSON.stringify({ text: "Lady Juliet gazed longingly at the stars, her heart aching for Romeo" }),
+      body: JSON.stringify({ text: "The interest rate schedule is pretty good: you get 0.7% on anything over $500,000, and 0.4% on balances from $100,000 to that amount. Below $100,000, it's just 0.2%. My initial deposit was $75,000. I have a monthly draw of $500 and a monthly deposit of $2,500." }),
+      // body: JSON.stringify({ text: "Initial balance: $1,000. Monthly contribution: $2,000. Monthly withdrawal: $500. Tiers are 0.15% for amounts under $5k, 0.35% for amounts up to $50k, and 0.9% for amounts greater than $50k." }),
+      // body: JSON.stringify({ text: "I'm starting a new account with $25,000. I'll add $750 every month, but I don't have any withdrawals. The interest rates are 0.3% on balances under $10,000, 0.5% for balances between $10,000 and $50,000, and 0.75% for everything over $50,000." }),
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
