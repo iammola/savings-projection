@@ -151,6 +151,16 @@
     if (isDarkMode.current) document.body.classList.add("dark");
     else document.body.classList.remove("dark");
   });
+
+  $effect(() => {
+    fetch("/api/extract", {
+      method: "POST",
+      body: JSON.stringify({ text: "Lady Juliet gazed longingly at the stars, her heart aching for Romeo" }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then(console.log);
+  });
 </script>
 
 <Drawer.Root direction="left">

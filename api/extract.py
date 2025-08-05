@@ -35,26 +35,15 @@ examples = [
 
 
 def extract(text: str):
-    return lx.extract(
+    extractions = lx.extract(
         text_or_documents=text,
         prompt_description=prompt,
         examples=examples,
         language_model_type=lx.inference.OpenAILanguageModel,
-        language_model_params={"base_url": os.environ.get("LANGEXTRACT_API_MODEL_URL")},
-        model_id="jan-nano-128k-Q4_K_M",
+        language_model_params={"base_url": os.environ.get(
+            "LANGEXTRACT_API_MODEL_URL")},
+        model_id=os.environ.get("LANGEXTRACT_API_MODEL_ID"),
         fence_output=False,
         use_schema_constraints=False,
     )
-
-
-result = extract(
-    "Lady Juliet gazed longingly at the stars, her heart aching for Romeo")
-
-# Save the results to a JSONL file
-lx.io.save_annotated_documents(
-    [result], output_name="extraction_results.json", output_dir=".")
-
-# Generate the visualization from the file
-html_content = lx.visualize("extraction_results.json")
-with open("visualization.html", mode="w",encoding="utf8") as f:
-    f.write(html_content)
+    return lx.data_lib.annotated_document_to_dict(extractions)
