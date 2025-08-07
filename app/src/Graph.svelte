@@ -15,8 +15,8 @@
   import type { Component } from "svelte";
 
   import { cn } from "$lib/utils";
+  import { format } from "$lib/shared.svelte";
   import { Separator } from "$lib/components/shadcn/separator";
-  import { currencyFormatter, percentFormatter, timeFormatter } from "$lib/shared";
 
   interface Props {
     months: MonthData[];
@@ -36,7 +36,7 @@
 
   function formatMonthTick(v: unknown) {
     if (typeof v !== "number" || !Number.isInteger(v) || v === 0) return "";
-    return timeFormatter
+    return format.time
       .formatToParts(monthsToDuration(v))
       .reduce(
         (acc: string, cur: { value: string; type: "group" | "literal" }) =>
@@ -99,7 +99,7 @@
                 {#if data.idx === 0}
                   After 1 Day
                 {:else}
-                  After {timeFormatter.format(monthsToDuration(data.idx))}
+                  After {format.time.format(monthsToDuration(data.idx))}
                 {/if}
               </span>
               <span
@@ -113,7 +113,7 @@
                 {:else if netChange < 0}
                   <TrendingDownIcon />
                 {/if}
-                {percentFormatter.format(growthRate)}
+                {format.percent.format(growthRate)}
               </span>
             </div>
             <Separator class={cn({ "bg-red-700": isDepleted })} />
@@ -124,7 +124,7 @@
                 </div>
                 <span class="min-w-max text-sm font-medium text-muted-foreground">{series.balance.label}</span>
                 <span class="text-right text-xs">
-                  {currencyFormatter.format(data.endingBalance)} @ {percentFormatter.format(data.inMonth.rate)}
+                  {format.currency.format(data.endingBalance)} @ {format.percent.format(data.inMonth.rate)}
                 </span>
               </div>
               <div class="col-span-full grid grid-cols-subgrid items-center">
@@ -133,7 +133,7 @@
                 </div>
                 <span class="min-w-max text-sm font-medium text-muted-foreground">{series.invested.label}</span>
                 <span class="text-right text-xs">
-                  {currencyFormatter.format(data.total.invested)}
+                  {format.currency.format(data.total.invested)}
                 </span>
               </div>
               <div class="col-span-full grid grid-cols-subgrid items-center">
@@ -142,7 +142,7 @@
                 </div>
                 <span class="min-w-max text-sm font-medium text-muted-foreground">Total Interest Earned</span>
                 <span class={cn("text-right text-xs", { "text-green-600": data.total.interest > 0 })}>
-                  {data.total.interest > 0 ? "+" : ""}{currencyFormatter.format(data.total.interest)}
+                  {data.total.interest > 0 ? "+" : ""}{format.currency.format(data.total.interest)}
                 </span>
               </div>
             </div>
@@ -155,7 +155,7 @@
                   "text-green-600": netChange > 0,
                 })}
               >
-                {netChange > 0 ? "+" : ""}{currencyFormatter.format(netChange)}
+                {netChange > 0 ? "+" : ""}{format.currency.format(netChange)}
               </span>
             </div>
           </div>

@@ -2,7 +2,7 @@
   import { MinusIcon, PlusIcon } from "@lucide/svelte";
 
   import { cn } from "$lib/utils";
-  import { currencyFormatter } from "$lib/shared";
+  import { format } from "$lib/shared.svelte";
 
   import type { EventHandler, HTMLInputAttributes, KeyboardEventHandler } from "svelte/elements";
 
@@ -17,7 +17,7 @@
 
   let { value = $bindable(), class: className, ...rest }: Props = $props();
 
-  const symbol = $derived(currencyFormatter.formatToParts(0).find((part) => part.type === "currency")?.value);
+  const symbol = $derived(format.currency.formatToParts(0).find((part) => part.type === "currency")?.value);
 
   const formatted = $derived(formatValue(value));
 
@@ -39,7 +39,7 @@
   };
 
   function formatValue(value: number) {
-    return currencyFormatter.format(value).replace(symbol!, "");
+    return format.currency.format(value).replace(symbol!, "");
   }
 
   function stepper(action: "INC" | "DEC") {
@@ -82,7 +82,7 @@
     <button
       type="button"
       aria-label="Decrement"
-      title={`Remove ${currencyFormatter.format(STEP_AMOUNT)}`}
+      title={`Remove ${format.currency.format(STEP_AMOUNT)}`}
       onclick={() => stepper("DEC")}
     >
       <MinusIcon />
@@ -90,7 +90,7 @@
     <button
       type="button"
       aria-label="Increment"
-      title={`Add ${currencyFormatter.format(STEP_AMOUNT)}`}
+      title={`Add ${format.currency.format(STEP_AMOUNT)}`}
       onclick={() => stepper("INC")}
     >
       <PlusIcon />
